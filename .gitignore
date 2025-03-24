@@ -1,0 +1,9 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+RecipeBook.API/appsettings.json
+RecipeBook.API/appsettings.Development.json
+ClientApp/appsettings.json
+ClientApp/appsettings.Development.json
