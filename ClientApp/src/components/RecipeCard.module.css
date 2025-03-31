@@ -1,0 +1,12 @@
+.card-background {
+  background-color: rgba(27, 64, 200, 0.171);
+  color: white;
+}
+.recipe-card {
+  transition: border 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.recipe-card:hover {
+  border: 2px solid #0d6efd;
+}

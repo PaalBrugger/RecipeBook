@@ -1,0 +1,37 @@
+.hero-header {
+  background: #121212;
+  padding: 4rem 2rem;
+}
+.hero-section {
+  background: url("/src/assets/Hero.png") no-repeat center center;
+  background-size: cover;
+  background-position: top;
+  height: 100vh; /* or adjust to fit your design */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 2rem;
+  position: relative;
+}
+
+.hero-content {
+  max-width: 600px;
+  text-align: left;
+}
+
+.hero-wrapper {
+  background: url("/src/assets/Hero.png") no-repeat center center;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* ⬅️ this is the key for left alignment */
+  padding-left: 5rem; /* pushes content away from edge */
+  padding-right: 2rem;
+  color: white;
+  position: relative;
+}
