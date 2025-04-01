@@ -6,15 +6,17 @@ import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
 import Favorites from "./pages/Favorites";
 import RecipeDetails from "./pages/RecipeDetails";
+import Recipes from "./pages/Recipes";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
         <Route index element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="favorites" element={<Favorites />} />
-        <Route path="recipe/:id" element={<RecipeDetails />} />
+        <Route path="Recipes" element={<Recipes />} />
+        <Route path="Login" element={<Login />} />
+        <Route path="Favorites" element={<Favorites />} />
+        <Route path="Recipe/:id" element={<RecipeDetails />} />
       </Route>
     </Routes>
   );
