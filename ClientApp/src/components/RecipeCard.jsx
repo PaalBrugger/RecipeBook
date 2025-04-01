@@ -1,5 +1,4 @@
 import styles from "./RecipeCard.module.css";
-import { useState, useEffect } from "react";
 
 function RecipeCard({ recipe }) {
   return (

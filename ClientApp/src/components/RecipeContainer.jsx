@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import RecipeCard from "./RecipeCard";
 import Spinner from "./Spinner";
 
-function RecipeContainer({ recipes, loading }) {
+function RecipeContainer({ recipes, isLoading }) {
   return (
     <div className="container">
-      {loading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <div className="row">

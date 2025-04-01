@@ -6,7 +6,7 @@ import Spinner from "../components/Spinner";
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const MEAL_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
 
   useEffect(() => {
@@ -18,7 +18,7 @@ function Favorites() {
     async function fetchFavorites() {
       if (favorites.length === 0) {
         setRecipes([]);
-        setLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -30,13 +30,13 @@ function Favorites() {
 
       const results = await Promise.all(fetches);
       setRecipes(results);
-      setLoading(false);
+      setIsLoading(false);
     }
 
     fetchFavorites();
   }, [favorites]);
 
-  if (loading) {
+  if (isLoading) {
     return <Spinner />;
   }
 

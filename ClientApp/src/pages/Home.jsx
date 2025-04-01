@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 function Home() {
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch random recipes from MealDB
   useEffect(() => {
@@ -17,7 +17,7 @@ function Home() {
       const meals = dataArr.map((data) => data.meals[0]);
 
       setRecipes(meals);
-      setLoading(false);
+      setIsLoading(false);
     }
 
     fetchRecipes();
@@ -25,7 +25,7 @@ function Home() {
   return (
     <div>
       <Hero />
-      <RecipeContainer recipes={recipes} loading={loading} />
+      <RecipeContainer recipes={recipes} isLoading={isLoading} />
     </div>
   );
 }
