@@ -1,18 +1,18 @@
-import RecipeCard from "./RecipeCard";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import RecipeCard from "./RecipeCard";
+import Spinner from "./Spinner";
 
 function RecipeContainer() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch random recipe from MealDB
+  // Fetch random recipes from MealDB
   useEffect(() => {
     async function fetchRecipes() {
-      const fetches = Array.from({ length: 8 }, () =>
+      const fetches = Array.from({ length: 4 }, () =>
         fetch("https://www.themealdb.com/api/json/v1/1/random.php")
       );
-
       const responses = await Promise.all(fetches);
       const dataArr = await Promise.all(responses.map((res) => res.json()));
       const meals = dataArr.map((data) => data.meals[0]);
@@ -27,14 +27,7 @@ function RecipeContainer() {
   return (
     <div className="container">
       {loading ? (
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ height: "50vh" }}
-        >
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading recipes...</span>
-          </div>
-        </div>
+        <Spinner />
       ) : (
         <div className="row">
           {recipes.map((recipe, index) => (

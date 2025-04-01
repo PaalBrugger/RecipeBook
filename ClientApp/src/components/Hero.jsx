@@ -1,4 +1,6 @@
 import styles from "./Hero.module.css";
+import { Link } from "react-router-dom";
+
 function Hero() {
   return (
     <div className={styles["hero-wrapper"]}>
@@ -6,8 +8,12 @@ function Hero() {
         <h1>Your Culinary Adventure Starts Here</h1>
         <p>Your destination for magical meals and celestial flavors.</p>
         <div className="d-flex gap-3 mt-4">
-          <button className="btn btn-warning">Recipes</button>
-          <button className="btn btn-info">Areas</button>
+          <Link to="Recipes">
+            <button className="btn btn-warning">Recipes</button>
+          </Link>
+          <Link to="Recipes">
+            <button className="btn btn-info">Areas</button>
+          </Link>
         </div>
       </div>
     </div>

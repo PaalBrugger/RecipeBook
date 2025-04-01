@@ -18,14 +18,14 @@ function Header() {
           </Link>
         </div>
         <div className="d-flex gap-4">
-          <Link to="/" className={styles["btn-glow-blue"]}>
-            Home
+          <Link to="Recipes" className={styles["btn-glow-blue"]}>
+            Recipes
           </Link>
-          <Link to="favorites" className={styles["btn-glow-blue"]}>
+          <Link to="Favorites" className={styles["btn-glow-blue"]}>
             Favorites
           </Link>
 
-          <Link to="login" className={styles["btn-glow-orange"]}>
+          <Link to="Login" className={styles["btn-glow-orange"]}>
             Log in
           </Link>
         </div>
