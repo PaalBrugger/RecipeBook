@@ -18,7 +18,6 @@ function RecipeDetails() {
       try {
         const res = await fetch(MEAL_URL + id);
         const data = await res.json();
-        console.log(data.meals[0]);
 
         setRecipe(data.meals[0]);
       } catch (error) {
@@ -84,7 +83,7 @@ function RecipeDetails() {
               <strong>Area:</strong> {recipe.strArea}
             </p>
             <h4 className="mt-4">Ingredients:</h4>
-            <ul>
+            <ul className="list-unstyled">
               {ingredients.map((item, index) => (
                 <li key={index}>{item}</li>
               ))}

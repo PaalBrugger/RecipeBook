@@ -3,6 +3,12 @@ import RecipeCard from "./RecipeCard";
 import Spinner from "./Spinner";
 
 function RecipeContainer({ recipes, isLoading }) {
+  if (!isLoading && recipes.length === 0)
+    return (
+      <div>
+        <h2>No recipes 😞</h2>
+      </div>
+    );
   return (
     <div className="container">
       {isLoading ? (
