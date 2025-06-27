@@ -4,11 +4,13 @@ import RecipeContainer from "../components/RecipeContainer";
 function Recipes() {
   const API_URL = "https://www.themealdb.com/api/json/v1/1/filter.php?";
   const RANDOM_URL = "https://www.themealdb.com/api/json/v1/1/random.php";
+  const SEARCH_URL = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 
   const [selectedCategory, setSelectedCategory] = useState("Select Category");
   const [selectedArea, setSelectedArea] = useState("Select Area");
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [dropdownOpenArea, setDropdownOpenArea] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   const [recipes, setRecipes] = useState([]);
@@ -78,6 +80,15 @@ function Recipes() {
       const isDefaultArea =
         selectedArea === "Select Area" || selectedArea === "All";
       try {
+        if (searchTerm !== "") {
+          const res = await fetch(`${SEARCH_URL}${searchTerm}`);
+          console.log(res);
+          const data = await res.json();
+          console.log(data);
+          meals = data.meals || [];
+          return;
+        }
+
         if (!isDefaultCategory) {
           const res = await fetch(`${API_URL}c=${selectedCategory}`);
           const data = await res.json();
@@ -86,16 +97,12 @@ function Recipes() {
           const res = await fetch(`${API_URL}a=${selectedArea}`);
           const data = await res.json();
           meals = data.meals || [];
-        } else {
-          const fetches = Array.from({ length: 20 }, () =>
-            fetch("https://www.themealdb.com/api/json/v1/1/random.php")
-          );
+        } else if (searchTerm === "") {
+          const fetches = Array.from({ length: 20 }, () => fetch(RANDOM_URL));
           const responses = await Promise.all(fetches);
           const dataArr = await Promise.all(responses.map((res) => res.json()));
           meals = dataArr.map((data) => data.meals[0]);
 
-          setRecipes(meals);
-          setIsLoading(false);
           return;
         }
         // If both filters are selected, do extra filtering
@@ -111,17 +118,14 @@ function Recipes() {
 
           meals = detailedMeals.filter((meal) => meal.strArea === selectedArea);
         }
-
-        setRecipes(meals);
-        setIsLoading(false);
       } catch (error) {
         console.log("Failed to fetch");
         setRecipes([]);
       } finally {
+        setRecipes(meals);
         setIsLoading(false);
       }
     }
-    console.log(searchTerm);
     fetchRecipes();
   }, [selectedArea, selectedCategory, searchTerm]);
 
@@ -160,6 +164,8 @@ function Recipes() {
                         className="list-group-item list-group-item-action"
                         onClick={() => {
                           setSelectedCategory(cat);
+                          setSearchInput("");
+                          setSearchTerm("");
                           setDropdownOpenCategory(false);
                         }}
                       >
@@ -192,6 +198,8 @@ function Recipes() {
                         className="list-group-item list-group-item-action"
                         onClick={() => {
                           setSelectedArea(area);
+                          setSearchInput("");
+                          setSearchTerm("");
                           setDropdownOpenArea(false);
                         }}
                       >
@@ -205,14 +213,34 @@ function Recipes() {
           </div>
 
           {/* Search Input */}
-          <div className="col-md-4">
+          <div className="col-md-4 d-flex">
             <input
               type="text"
               className="form-control"
               placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setSelectedArea("Select Area");
+                  setSelectedCategory("Select Category");
+                  setSearchTerm(searchInput);
+                }
+              }}
             />
+            {/* Clear search button */}
+
+            {searchInput && (
+              <button
+                className="btn btn-outline-secondary ms-2"
+                onClick={() => {
+                  setSearchInput("");
+                  setSearchTerm("");
+                }}
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
       </div>
