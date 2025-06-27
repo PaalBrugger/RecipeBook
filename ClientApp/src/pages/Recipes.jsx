@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { areas, categories } from "../utils/dropdownOptions";
 import RecipeContainer from "../components/RecipeContainer";
 
 function Recipes() {
@@ -29,55 +30,6 @@ function Recipes() {
     currentPage * recipesPerPage
   );
 
-  const categories = [
-    "All",
-    "Beef",
-    "Breakfast",
-    "Chicken",
-    "Dessert",
-    "Goat",
-    "Lamb",
-    "Pasta",
-    "Pork",
-    "Seafood",
-    "Side",
-    "Starter",
-    "Vegan",
-    "Vegetarian",
-    "Miscellaneous",
-  ];
-  const areas = [
-    "All",
-    "American",
-    "British",
-    "Canadian",
-    "Chinese",
-    "Croatian",
-    "Dutch",
-    "Egyptian",
-    "French",
-    "Greek",
-    "Indian",
-    "Irish",
-    "Italian",
-    "Jamaican",
-    "Japanese",
-    "Kenyan",
-    "Malaysian",
-    "Mexican",
-    "Moroccan",
-    "Polish",
-    "Portugese",
-    "Russian",
-    "Spanish",
-    "Thai",
-    "Tunisian",
-    "Turkish",
-    "Ukrainian",
-    "Uruguayan",
-    "Vietnamese",
-  ];
-
   // Filter by category and area
   useEffect(() => {
     async function fetchRecipes() {
@@ -107,7 +59,7 @@ function Recipes() {
           const data = await res.json();
           meals = data.meals || [];
         } else if (searchTerm === "") {
-          const fetches = Array.from({ length: 20 }, () => fetch(RANDOM_URL));
+          const fetches = Array.from({ length: 36 }, () => fetch(RANDOM_URL));
           const responses = await Promise.all(fetches);
           const dataArr = await Promise.all(responses.map((res) => res.json()));
           meals = dataArr.map((data) => data.meals[0]);
