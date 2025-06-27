@@ -20,6 +20,15 @@ function Recipes() {
   const areaRef = useRef(null);
   const dropdownRef = useRef(null);
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 12;
+  const totalPages = Math.ceil(recipes.length / recipesPerPage);
+  const paginatedRecipes = recipes.slice(
+    (currentPage - 1) * recipesPerPage,
+    currentPage * recipesPerPage
+  );
+
   const categories = [
     "All",
     "Beef",
@@ -246,7 +255,13 @@ function Recipes() {
       </div>
       {/* Recipes */}
       <div className="pt-4">
-        <RecipeContainer recipes={recipes} isLoading={isLoading} />
+        <RecipeContainer
+          recipes={paginatedRecipes}
+          isLoading={isLoading}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );
