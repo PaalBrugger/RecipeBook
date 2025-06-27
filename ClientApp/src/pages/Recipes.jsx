@@ -19,7 +19,6 @@ function Recipes() {
 
   const categoryRef = useRef(null);
   const areaRef = useRef(null);
-  const dropdownRef = useRef(null);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -93,10 +92,15 @@ function Recipes() {
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setDropdownOpenCategory(false);
+      }
+
+      if (areaRef.current && !areaRef.current.contains(event.target)) {
+        setDropdownOpenArea(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
