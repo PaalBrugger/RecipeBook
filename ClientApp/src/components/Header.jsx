@@ -4,6 +4,7 @@ import { useAuth } from "../services/AuthProvider";
 
 function Header() {
   const { isAuthenticated, user } = useAuth();
+
   return (
     <div className={`title ${styles.header}`}>
       <nav className="navbar navbar-dark bg-transparent px-4 p-5">
