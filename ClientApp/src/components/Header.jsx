@@ -1,7 +1,9 @@
 import styles from "./Header.module.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../services/AuthProvider";
 
 function Header() {
+  const { isAuthenticated, user } = useAuth();
   return (
     <div className={`title ${styles.header}`}>
       <nav className="navbar navbar-dark bg-transparent px-4 p-5">
@@ -26,7 +28,7 @@ function Header() {
           </Link>
 
           <Link to="Login" className={styles["btn-glow-orange"]}>
-            Log in
+            {isAuthenticated ? user.username : "Login"}
           </Link>
         </div>
       </nav>

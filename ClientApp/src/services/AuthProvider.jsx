@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -18,9 +17,7 @@ export function AuthProvider({ children }) {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       setToken(data, token);
-      setUser({ username: data.username });
-      alert("Logged in");
-      Navigate("");
+      setUser({ username, token });
     } else {
       alert("Invalid login");
     }
@@ -61,6 +58,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    user,
     isAuthenticated: !!token,
   };
 

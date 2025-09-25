@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../services/AuthProvider";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function Login() {
-  const { login, register } = useAuth();
+  const { login, register, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // Login state
   const [loginUsername, setLoginUsername] = useState("");
@@ -21,6 +23,7 @@ function Login() {
     e.preventDefault();
     try {
       await login(loginUsername, loginPassword);
+      navigate("/");
     } catch (err) {
       alert(err.message);
     }
@@ -43,7 +46,15 @@ function Login() {
       alert(err.message);
     }
   }
-  return (
+  async function handleLogout(e) {
+    e.preventDefault();
+    try {
+      await logout();
+    } catch (err) {
+      alert(err.message);
+    }
+  }
+  return !isAuthenticated ? (
     <div style={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
       {/* Login box */}
       <div
@@ -146,6 +157,12 @@ function Login() {
         </form>
       </div>
     </div>
+  ) : (
+    <form onSubmit={handleLogout}>
+      <button type="submit" onSubmit={handleLogout} className="btn btn-primary">
+        Signout
+      </button>
+    </form>
   );
 }
 
