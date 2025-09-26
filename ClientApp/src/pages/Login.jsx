@@ -68,18 +68,22 @@ function Login() {
         <form onSubmit={handleLogin}>
           <input
             type="text"
+            name="username"
             placeholder="Username"
             value={loginUsername}
             onChange={(e) => setLoginUsername(e.target.value)}
+            autoComplete="username"
           />
           <br />
           <br />
 
           <input
             type="password"
+            name="password"
             placeholder="Password"
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
+            autoComplete="current-password"
           />
           <br />
           <br />
