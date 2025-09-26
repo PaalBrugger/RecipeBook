@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Login() {
-  const { login, register, logout, isAuthenticated } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   // Login state
