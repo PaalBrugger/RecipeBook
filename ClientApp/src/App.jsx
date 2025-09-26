@@ -11,6 +11,8 @@ import Recipes from "./pages/Recipes";
 import { AuthProvider } from "./services/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditUser from "./pages/Edituser";
+import User from "./pages/User";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="Recipes" element={<Recipes />} />
           <Route path="Login" element={<Login />} />
+          <Route path="User" element={<User />} />
+          <Route path="EditUser" element={<EditUser />} />
           <Route path="Favorites" element={<Favorites />} />
           <Route path="Recipe/:id" element={<RecipeDetails />} />
         </Route>

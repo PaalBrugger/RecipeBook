@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../services/AuthProvider";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Login() {
@@ -49,16 +49,8 @@ function Login() {
       toast.error(err.message);
     }
   }
-  async function handleLogout(e) {
-    e.preventDefault();
-    try {
-      await logout();
-      toast.info("Logged out");
-    } catch (err) {
-      alert(err.message);
-    }
-  }
-  return !isAuthenticated ? (
+
+  return (
     <div style={{ display: "flex", justifyContent: "center", gap: "2rem" }}>
       {/* Login box */}
       <div
@@ -165,12 +157,6 @@ function Login() {
         </form>
       </div>
     </div>
-  ) : (
-    <form onSubmit={handleLogout}>
-      <button type="submit" onSubmit={handleLogout} className="btn btn-primary">
-        Signout
-      </button>
-    </form>
   );
 }
 
