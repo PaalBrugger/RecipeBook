@@ -1,7 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import "./App.css";
-import RecipeContainer from "./components/RecipeContainer";
 import Home from "./pages/Home.jsx";
 import AppLayout from "./pages/AppLayout";
 import Login from "./pages/Login";
@@ -13,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditUser from "./pages/Edituser";
 import User from "./pages/User";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -21,11 +20,25 @@ function App() {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="Recipes" element={<Recipes />} />
-          <Route path="Login" element={<Login />} />
-          <Route path="User" element={<User />} />
-          <Route path="EditUser" element={<EditUser />} />
-          <Route path="Favorites" element={<Favorites />} />
           <Route path="Recipe/:id" element={<RecipeDetails />} />
+          <Route path="Favorites" element={<Favorites />} />
+          <Route path="Login" element={<Login />} />
+          <Route
+            path="User"
+            element={
+              <ProtectedRoute>
+                <User />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="EditUser"
+            element={
+              <ProtectedRoute>
+                <EditUser />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
       <ToastContainer position="top-right" autoClose={1500} />
