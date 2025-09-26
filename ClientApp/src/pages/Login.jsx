@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../services/AuthProvider";
 import { Navigate, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Login() {
   const { login, register, logout, isAuthenticated } = useAuth();
@@ -23,9 +24,11 @@ function Login() {
     e.preventDefault();
     try {
       await login(loginUsername, loginPassword);
+      toast.success(`Hello ${loginUsername}🌮`);
       navigate("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
+    } finally {
     }
   }
   async function handleRegister(e) {
@@ -41,15 +44,16 @@ function Login() {
         regPostalCode,
         regPassword
       );
-      alert("Registration successful! Please log in");
+      toast.success("Registration successful! Please log in");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   }
   async function handleLogout(e) {
     e.preventDefault();
     try {
       await logout();
+      toast.info("Logged out");
     } catch (err) {
       alert(err.message);
     }

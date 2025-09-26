@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
       setToken(data, token);
       setUser({ username, token });
     } else {
-      alert("Invalid login");
+      throw new Error("Invalid login");
     }
   }
   async function register(
