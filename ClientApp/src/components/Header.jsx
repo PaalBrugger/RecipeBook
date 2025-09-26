@@ -28,9 +28,15 @@ function Header() {
             Favorites
           </Link>
 
-          <Link to="Login" className={styles["btn-glow-orange"]}>
-            {isAuthenticated ? user.username : "Login"}
-          </Link>
+          {isAuthenticated ? (
+            <Link to="User" className={styles["btn-glow-orange"]}>
+              {user?.username}
+            </Link>
+          ) : (
+            <Link to="Login" className={styles["btn-glow-orange"]}>
+              Login
+            </Link>
+          )}
         </div>
       </nav>
     </div>
