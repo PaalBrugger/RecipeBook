@@ -9,7 +9,7 @@ import Recipes from "./pages/Recipes";
 import { AuthProvider } from "./services/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import EditUser from "./pages/Edituser";
+import EditUser from "./pages/EditUser";
 import User from "./pages/User";
 import ProtectedRoute from "./components/ProtectedRoute";
 
