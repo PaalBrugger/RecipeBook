@@ -35,10 +35,11 @@ builder.Services.AddAuthentication(options =>
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         };
     });
 
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
@@ -59,11 +60,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 app.UseCors("AllowReactApp");
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 app.Run();
 
