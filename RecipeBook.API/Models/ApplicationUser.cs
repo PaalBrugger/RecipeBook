@@ -6,7 +6,7 @@ namespace RecipeBook.API.Models;
 public class ApplicationUser : IdentityUser
 
 {
-    public string name { get; set; }
+    public string Name { get; set; }
     public string? City { get; set; }
     public string? Country { get; set; }
     public string? PostalCode { get; set; }
