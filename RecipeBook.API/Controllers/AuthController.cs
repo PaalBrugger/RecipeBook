@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
 
         var user = new ApplicationUser
         {
-            UserName = model.Username, name = model.Name, Email = model.Email, City = model.City,
+            UserName = model.Username, Name = model.Name, Email = model.Email, City = model.City,
             Country = model.Country, PostalCode = model.PostalCode
         };
         
@@ -50,7 +50,8 @@ public class AuthController : ControllerBase
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),                
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
