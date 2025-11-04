@@ -21,15 +21,12 @@ function User() {
       <Link to="/EditUser" className="btn btn-primary">
         Edit user
       </Link>
-      <form onSubmit={handleLogout} className="pt-4">
-        <button
-          type="submit"
-          onSubmit={handleLogout}
-          className="btn btn-primary"
-        >
-          Signout
-        </button>
-      </form>
+      <br></br>
+      <button onClick={handleLogout} className="btn btn-primary mt-3">
+        Signout
+      </button>
+      <br></br>
+      <button className="btn btn-danger mt-3">Delete user</button>
     </div>
   );
 }
