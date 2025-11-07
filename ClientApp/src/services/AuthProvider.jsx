@@ -56,11 +56,12 @@ export function AuthProvider({ children }) {
     }
   }
 
-  function logout() {
+  async function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setToken(null);
   }
+
   const value = {
     token,
     login,
