@@ -21,7 +21,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetMe()
     {
         var username = User.Identity?.Name;
-        if (username == null) return Unauthorized();
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
 
         var user = await _userManager.FindByNameAsync(username);
         if (user == null) return NotFound();
@@ -33,7 +33,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> UpdateMe([FromBody] UpdateUserModel model)
     {
         var username = User.Identity?.Name;
-        if (username == null) return Unauthorized();
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
         
         var user = await _userManager.FindByNameAsync(username);
         if (user == null) return NotFound();
@@ -46,9 +46,25 @@ public class UserController : ControllerBase
         user.PostalCode = model.PostalCode;
         
         var result = await _userManager.UpdateAsync(user);
-        if (result.Succeeded) return Ok(new {message = "Updated Successfully"});
+        if (result.Succeeded) return Ok(new {message = "User Updated Successfully"});
         
         return BadRequest(result.Errors);
+        
+    }
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteMe()
+    {
+        var username = User.Identity?.Name;
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
+        
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return NotFound();
+        
+        var result = await _userManager.DeleteAsync(user);
+        
+        if (result.Succeeded) return Ok(new {message = "User Deleted Successfully"});
+        
+        return BadRequest(new {result.Errors});
         
     }
 }
