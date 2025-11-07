@@ -44,7 +44,9 @@ function Login() {
         regPostalCode,
         regPassword
       );
-      toast.success("Registration successful! Please log in");
+      toast.success("Registration successful!✅");
+      await login(regUsername, regPassword);
+      navigate("/");
     } catch (err) {
       toast.error(err.message);
     }
