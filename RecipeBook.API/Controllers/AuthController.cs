@@ -34,6 +34,8 @@ public class AuthController : ControllerBase
             UserName = model.Username, Name = model.Name, Email = model.Email, City = model.City,
             Country = model.Country, PostalCode = model.PostalCode
         };
+        var existingUsername = await _userManager.FindByNameAsync(model.Username);
+        if (existingUsername != null)  return BadRequest("Username already exists");
         
         var result = await _userManager.CreateAsync(user, model.Password);
         
@@ -42,6 +44,20 @@ public class AuthController : ControllerBase
         return Ok(new { message = "User registered  successfully" });
     }
 
+    [HttpPost("check-username")]
+    public async Task<IActionResult> CheckUsername([FromBody] string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null)
+        {
+            return Ok(new { available = true });
+        }
+        else
+        {
+            return Conflict(new { available = false, message = "Username is already taken." });
+        }
+        
+    }
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {

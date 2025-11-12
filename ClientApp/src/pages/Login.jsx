@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { validatePassword } from "../utils/helpers";
 
 function Login() {
-  const { login, register } = useAuth();
+  const { login, register, checkUsernameAvailability } = useAuth();
   const navigate = useNavigate();
 
   // Login state
@@ -19,6 +20,8 @@ function Login() {
   const [regCountry, setRegCountry] = useState("");
   const [regPostalCode, setRegPostalCode] = useState("");
   const [regPassword, setRegPassword] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState([]);
+  const [usernameAvailableMessage, setUsernameAvailableMessage] = useState("");
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -49,6 +52,33 @@ function Login() {
       navigate("/");
     } catch (err) {
       toast.error(err.message);
+    }
+  }
+
+  function handlePasswordChange(e) {
+    const value = e.target.value;
+    setRegPassword(value);
+    setPasswordErrors(validatePassword(value));
+  }
+
+  useEffect(() => {
+    if (!regUsername) {
+      setUsernameAvailableMessage("");
+      return;
+    }
+    const delayDebounce = setTimeout(() => {
+      checkUsername(regUsername);
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [regUsername]);
+
+  async function checkUsername(username) {
+    const result = await checkUsernameAvailability(username);
+    if (!result.available) {
+      setUsernameAvailableMessage(result.message);
+    } else {
+      setUsernameAvailableMessage("");
     }
   }
 
@@ -98,11 +128,24 @@ function Login() {
             type="text"
             placeholder="Username"
             value={regUsername}
-            onChange={(e) => setRegUsername(e.target.value)}
+            onChange={(e) => {
+              setRegUsername(e.target.value);
+            }}
+            onBlur={(e) => checkUsername(e.target.value)}
           />
+          {usernameAvailableMessage && (
+            <p
+              style={{
+                color: "red",
+                marginTop: "4px",
+                marginBottom: "0",
+              }}
+            >
+              {usernameAvailableMessage}
+            </p>
+          )}
           <br />
           <br />
-
           <input
             type="email"
             placeholder="Email"
@@ -119,7 +162,6 @@ function Login() {
           />
           <br />
           <br />
-
           <input
             type="text"
             placeholder="Country"
@@ -148,12 +190,22 @@ function Login() {
             type="password"
             placeholder="Password"
             value={regPassword}
-            onChange={(e) => setRegPassword(e.target.value)}
+            onChange={handlePasswordChange}
           />
+          <ul>
+            {passwordErrors.map((err, i) => (
+              <li key={i} style={{ color: "red" }}>
+                {err}
+              </li>
+            ))}
+          </ul>
           <br />
           <br />
-
-          <button type="submit" className="btn btn-primary">
+          <button
+            disabled={usernameAvailableMessage !== ""}
+            type="submit"
+            className="btn btn-primary"
+          >
             Register
           </button>
         </form>

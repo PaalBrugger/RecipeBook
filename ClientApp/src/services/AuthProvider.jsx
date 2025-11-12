@@ -9,26 +9,6 @@ export function AuthProvider({ children }) {
   });
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  async function login(username, password) {
-    const res = await fetch("http://localhost:5091/api/auth/login", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-
-      localStorage.setItem("token", data.token);
-      setToken(data.token);
-
-      const userData = { username, token: data.token };
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-    } else {
-      throw new Error("Invalid login");
-    }
-  }
   async function register(
     username,
     email,
@@ -55,6 +35,50 @@ export function AuthProvider({ children }) {
       throw new Error("Registration failed");
     }
   }
+  async function checkUsernameAvailability(username) {
+    try {
+      const res = await fetch("http://localhost:5091/api/auth/check-username", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(username),
+      });
+      if (res.ok) {
+        return { available: true };
+      } else if (res.status === 409) {
+        const data = await res.json();
+        return {
+          available: false,
+          message: data.message,
+        };
+      } else {
+        console.warn("Unexpected status:", res.status);
+        return { available: false, message: "Unexpected error." };
+      }
+    } catch (error) {
+      console.error("Error checking username:", error);
+    }
+  }
+
+  async function login(username, password) {
+    const res = await fetch("http://localhost:5091/api/auth/login", {
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+
+      const userData = { username, token: data.token };
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+    } else {
+      throw new Error("Invalid login");
+    }
+  }
 
   async function logout() {
     localStorage.removeItem("token");
@@ -64,8 +88,9 @@ export function AuthProvider({ children }) {
 
   const value = {
     token,
-    login,
     register,
+    checkUsernameAvailability,
+    login,
     logout,
     user,
     isAuthenticated: !!token,
