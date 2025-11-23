@@ -12,6 +12,8 @@ public class ApplicationDBContext :  IdentityDbContext <ApplicationUser>
         
     }
     public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<Ingredient> Ingredients { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

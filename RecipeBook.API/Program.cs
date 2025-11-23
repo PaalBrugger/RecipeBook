@@ -51,8 +51,44 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+builder.Services.AddHttpClient<MealDBImporter>();
+
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDBContext>();
+    
+    context.Database.Migrate();
+
+    if (!context.Recipes.Any())
+    {
+        var importer = services.GetRequiredService<MealDBImporter>();
+        await importer.ImportMealsAsync("Beef");
+        await importer.ImportMealsAsync("Breakfast");
+        await importer.ImportMealsAsync("Chicken");
+        await importer.ImportMealsAsync("Dessert");
+        await importer.ImportMealsAsync("Goat");
+        await importer.ImportMealsAsync("Lamb");
+        await importer.ImportMealsAsync("Pasta");
+        await importer.ImportMealsAsync("Pork");
+        await importer.ImportMealsAsync("Seafood");
+        await importer.ImportMealsAsync("Side");
+        await importer.ImportMealsAsync("Starter");
+        await importer.ImportMealsAsync("Vegan");
+        await importer.ImportMealsAsync("Vegetarian");
+        await importer.ImportMealsAsync("Miscellaneous");
+        
+        Console.WriteLine("Imported MealDB recipes into database!");
+    }
+    else
+    {
+        Console.WriteLine("Recipes already exist — skipping import.");
+
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
