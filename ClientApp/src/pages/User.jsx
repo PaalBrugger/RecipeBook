@@ -36,7 +36,7 @@ function User() {
 
     if (!response.ok) {
       const error = await response.json();
-      console.error("Delete failed:", error);
+      console.error("Delete failed:");
       toast.error("Failed to delete user");
       return;
     }
