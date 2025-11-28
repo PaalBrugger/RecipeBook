@@ -61,7 +61,7 @@ function EditUser() {
 
     if (!response.ok) {
       const error = await response.json();
-      console.error("Update failed:", error);
+      console.error("Update failed:");
       throw new Error("Failed to update user");
     }
     toast.success(`Changes saved 💾`);
