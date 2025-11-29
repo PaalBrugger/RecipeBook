@@ -47,14 +47,18 @@ function User() {
 
   return (
     <div>
-      <Link to="/EditUser" className="btn btn-primary">
+      <Link to="" className="btn mt-5 btn-primary">
+        My recipes
+      </Link>
+      <br />
+      <Link to="/EditUser" className="btn mt-3 btn-primary">
         Edit user
       </Link>
-      <br></br>
+      <br />
       <button onClick={handleLogout} className="btn btn-primary mt-3">
         Signout
       </button>
-      <br></br>
+      <br />
       <button onClick={handleDelete} className="btn btn-danger mt-3">
         Delete user
       </button>
