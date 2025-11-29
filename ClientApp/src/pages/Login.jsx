@@ -73,6 +73,10 @@ function Login() {
     return () => clearTimeout(delayDebounce);
   }, [regUsername]);
 
+  useEffect(() => {
+    if (!regPassword) setPasswordErrors([]);
+  }, [regPassword]);
+
   async function checkUsername(username) {
     const result = await checkUsernameAvailability(username);
     if (!result.available) {
