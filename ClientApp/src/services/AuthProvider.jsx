@@ -32,7 +32,8 @@ export function AuthProvider({ children }) {
       }),
     });
     if (!res.ok) {
-      throw new Error("Registration failed");
+      const data = await res.json();
+      throw { message: "Registration failed", backend: data };
     }
   }
   async function checkUsernameAvailability(username) {
@@ -55,7 +56,7 @@ export function AuthProvider({ children }) {
         return { available: false, message: "Unexpected error." };
       }
     } catch (error) {
-      console.error("Error checking username:", error);
+      console.error("Error checking username:");
     }
   }
 

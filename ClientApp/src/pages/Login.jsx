@@ -50,8 +50,8 @@ function Login() {
       toast.success("Registration successful!✅");
       await login(regUsername, regPassword);
       navigate("/");
-    } catch (err) {
-      toast.error(err.message);
+    } catch (error) {
+      error.backend.forEach((err) => toast.error(err.description));
     }
   }
 
@@ -112,7 +112,11 @@ function Login() {
           <br />
           <br />
 
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={loginUsername === "" || loginPassword === ""}
+          >
             Login
           </button>
         </form>
@@ -202,7 +206,12 @@ function Login() {
           <br />
           <br />
           <button
-            disabled={usernameAvailableMessage !== ""}
+            disabled={
+              usernameAvailableMessage !== "" ||
+              regUsername === "" ||
+              regEmail === "" ||
+              regPassword === ""
+            }
             type="submit"
             className="btn btn-primary"
           >
