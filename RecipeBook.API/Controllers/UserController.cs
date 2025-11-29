@@ -32,6 +32,8 @@ public class UserController : ControllerBase
     [HttpPut("me")]
     public async Task<IActionResult> UpdateMe([FromBody] UpdateUserModel model)
     {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        
         var username = User.Identity?.Name;
         if (string.IsNullOrEmpty(username)) return Unauthorized();
         
@@ -49,8 +51,8 @@ public class UserController : ControllerBase
         if (result.Succeeded) return Ok(new {message = "User Updated Successfully"});
         
         return BadRequest(result.Errors);
-        
     }
+    
     [HttpDelete("me")]
     public async Task<IActionResult> DeleteMe()
     {
@@ -65,6 +67,5 @@ public class UserController : ControllerBase
         if (result.Succeeded) return Ok(new {message = "User Deleted Successfully"});
         
         return BadRequest(new {result.Errors});
-        
     }
 }
