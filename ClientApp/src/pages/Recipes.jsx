@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { areas, categories } from "../utils/dropdownOptions";
 import RecipeContainer from "../components/RecipeContainer";
 
@@ -7,12 +8,19 @@ function Recipes() {
   const RANDOM_URL = "https://www.themealdb.com/api/json/v1/1/random.php";
   const SEARCH_URL = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 
-  const [selectedCategory, setSelectedCategory] = useState("Select Category");
-  const [selectedArea, setSelectedArea] = useState("Select Area");
+  const [params, setParams] = useSearchParams();
+
+  const category = params.get("category") || "Select Category";
+  const area = params.get("area") || "Select Area";
+  const search = params.get("search") || "";
+
+  const [selectedCategory, setSelectedCategory] = useState(category);
+  const [selectedArea, setSelectedArea] = useState(area);
+  const [searchInput, setSearchInput] = useState(search);
+  const [searchTerm, setSearchTerm] = useState(search);
+
   const [dropdownOpenCategory, setDropdownOpenCategory] = useState(false);
   const [dropdownOpenArea, setDropdownOpenArea] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,12 +47,11 @@ function Recipes() {
         selectedCategory === "Select Category" || selectedCategory === "All";
       const isDefaultArea =
         selectedArea === "Select Area" || selectedArea === "All";
+
       try {
         if (searchTerm !== "") {
           const res = await fetch(`${SEARCH_URL}${searchTerm}`);
-          console.log(res);
           const data = await res.json();
-          console.log(data);
           meals = data.meals || [];
           return;
         }
@@ -62,9 +69,8 @@ function Recipes() {
           const responses = await Promise.all(fetches);
           const dataArr = await Promise.all(responses.map((res) => res.json()));
           meals = dataArr.map((data) => data.meals[0]);
-
-          return;
         }
+
         // If both filters are selected, do extra filtering
         if (!isDefaultCategory && !isDefaultArea) {
           const detailedFetches = meals.map((meal) =>
@@ -89,6 +95,14 @@ function Recipes() {
     fetchRecipes();
   }, [selectedArea, selectedCategory, searchTerm]);
 
+  // Sync internal state with URL
+  useEffect(() => {
+    setSelectedCategory(category);
+    setSelectedArea(area);
+    setSearchInput(search);
+    setSearchTerm(search);
+  }, [category, area, search]);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -104,6 +118,24 @@ function Recipes() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  function updateURL(newValues) {
+    const newParams = new URLSearchParams(params);
+
+    Object.entries(newValues).forEach(([key, value]) => {
+      if (
+        !value ||
+        value === "Select Category" ||
+        value === "Select Area" ||
+        value === "All"
+      ) {
+        newParams.delete(key);
+      } else {
+        newParams.set(key, value);
+      }
+    });
+    setParams(newParams);
+  }
 
   return (
     <div>
@@ -132,6 +164,11 @@ function Recipes() {
                           setSearchInput("");
                           setSearchTerm("");
                           setDropdownOpenCategory(false);
+                          updateURL({
+                            category: cat,
+                            area: selectedArea,
+                            search: null,
+                          });
                         }}
                       >
                         {cat}
@@ -166,6 +203,11 @@ function Recipes() {
                           setSearchInput("");
                           setSearchTerm("");
                           setDropdownOpenArea(false);
+                          updateURL({
+                            category: selectedCategory,
+                            area: area,
+                            search: null,
+                          });
                         }}
                       >
                         {area}
@@ -190,17 +232,26 @@ function Recipes() {
                   setSelectedArea("Select Area");
                   setSelectedCategory("Select Category");
                   setSearchTerm(searchInput);
+                  updateURL({
+                    category: null,
+                    area: null,
+                    search: searchInput,
+                  });
                 }
               }}
             />
             {/* Clear search button */}
-
             {searchInput && (
               <button
                 className="btn btn-outline-secondary ms-2"
                 onClick={() => {
                   setSearchInput("");
                   setSearchTerm("");
+                  updateURL({
+                    category: null,
+                    area: null,
+                    search: null,
+                  });
                 }}
               >
                 ✕
