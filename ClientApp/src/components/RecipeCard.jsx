@@ -7,11 +7,11 @@ function RecipeCard({ recipe }) {
     >
       <div className="card-body">
         <img
-          src={recipe.strMealThumb}
+          src={recipe.mainImageUrl}
           className="img-fluid rounded-4"
           alt="Recipe"
         ></img>
-        <h3 className="pt-3">{recipe.strMeal}</h3>
+        <h3 className="pt-3">{recipe.name}</h3>
       </div>
     </div>
   );

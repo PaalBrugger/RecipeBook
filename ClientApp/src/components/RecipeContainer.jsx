@@ -25,7 +25,7 @@ function RecipeContainer({
             {recipes.map((recipe, index) => (
               <div className="col-md-3 pb-4" key={index}>
                 <Link
-                  to={`/recipe/${recipe.idMeal}`}
+                  to={`/recipe/${recipe.id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <RecipeCard recipe={recipe} />

@@ -11,15 +11,14 @@ function RecipeDetails() {
 
   const { id } = useParams();
 
-  const MEAL_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
-
+  const MEAL_URL = "http://localhost:5091/api/recipe/";
   useEffect(() => {
     async function fetchrecipe() {
       try {
         const res = await fetch(MEAL_URL + id);
         const data = await res.json();
 
-        setRecipe(data.meals[0]);
+        setRecipe(data);
       } catch (error) {
         console.error("Failed to fetch recipe:", error);
       }
@@ -46,15 +45,6 @@ function RecipeDetails() {
 
   if (!recipe) return <Spinner />;
 
-  const ingredients = [];
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = recipe[`strIngredient${i}`];
-    const measure = recipe[`strMeasure${i}`];
-    if (ingredient) {
-      ingredients.push(`${ingredient} - ${measure}`);
-    }
-  }
-
   return (
     <div className="container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -70,26 +60,28 @@ function RecipeDetails() {
         <div className="row">
           <div className="col-md-5">
             <img
-              src={recipe.strMealThumb}
-              alt={recipe.strMeal}
+              src={recipe.mainImageUrl}
+              alt={recipe.name}
               className="img-fluid rounded-4"
             />
           </div>
           <div className="col-md-7">
-            <h2>{recipe.strMeal}</h2>
+            <h2>{recipe.name}</h2>
             <p>
-              <strong>Category:</strong> {recipe.strCategory}
+              <strong>Category:</strong> {recipe.category}
               <br />
-              <strong>Area:</strong> {recipe.strArea}
+              <strong>Area:</strong> {recipe.area}
             </p>
             <h4 className="mt-4">Ingredients:</h4>
             <ul className="list-unstyled">
-              {ingredients.map((item, index) => (
-                <li key={index}>{item}</li>
+              {recipe.ingredients.map((ingredient, index) => (
+                <li key={index}>
+                  {ingredient.name} - {ingredient.measure}
+                </li>
               ))}
             </ul>
             <h4 className="mt-4">Instructions:</h4>
-            <p>{recipe.strInstructions}</p>
+            <p>{recipe.instructions}</p>
           </div>
         </div>
       </div>

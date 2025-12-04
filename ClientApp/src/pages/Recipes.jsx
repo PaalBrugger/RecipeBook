@@ -4,9 +4,10 @@ import { areas, categories } from "../utils/dropdownOptions";
 import RecipeContainer from "../components/RecipeContainer";
 
 function Recipes() {
-  const API_URL = "https://www.themealdb.com/api/json/v1/1/filter.php?";
-  const RANDOM_URL = "https://www.themealdb.com/api/json/v1/1/random.php";
-  const SEARCH_URL = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
+  const FILTER_URL = "http://localhost:5091/api/recipe/filter";
+  const RANDOM_URL = "http://localhost:5091/api/recipe/random";
+  const SEARCH_URL = "http://localhost:5091/api/recipe/search?searchTerm=";
+  const LOOKUP_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?";
 
   const [params, setParams] = useSearchParams();
 
@@ -42,50 +43,51 @@ function Recipes() {
     async function fetchRecipes() {
       setIsLoading(true);
       let meals = [];
-
       const isDefaultCategory =
         selectedCategory === "Select Category" || selectedCategory === "All";
       const isDefaultArea =
         selectedArea === "Select Area" || selectedArea === "All";
-
       try {
         if (searchTerm !== "") {
           const res = await fetch(`${SEARCH_URL}${searchTerm}`);
           const data = await res.json();
-          meals = data.meals || [];
-          return;
-        }
+          meals = data || [];
+        } else {
+          if (!isDefaultCategory) {
+            const res = await fetch(
+              `${FILTER_URL}?category=${selectedCategory}`
+            );
+            const data = await res.json();
+            meals = data || [];
+          } else if (!isDefaultArea) {
+            const res = await fetch(`${FILTER_URL}?area=${selectedArea}`);
+            const data = await res.json();
+            meals = data || [];
+          } else if (searchTerm === "") {
+            const fetches = Array.from({ length: 36 }, () => fetch(RANDOM_URL));
+            const responses = await Promise.all(fetches);
+            const dataArr = await Promise.all(
+              responses.map((res) => res.json())
+            );
+            meals = dataArr.map((data) => data);
+          }
+          //TODO
+          // If both filters are selected, do extra filtering
+          if (!isDefaultCategory && !isDefaultArea) {
+            const detailedFetches = meals.map((meal) =>
+              fetch(`${LOOKUP_URL}i=${meal.idMeal}`)
+                .then((res) => res.json())
+                .then((data) => data.meals[0])
+            );
+            const detailedMeals = await Promise.all(detailedFetches);
 
-        if (!isDefaultCategory) {
-          const res = await fetch(`${API_URL}c=${selectedCategory}`);
-          const data = await res.json();
-          meals = data.meals || [];
-        } else if (!isDefaultArea) {
-          const res = await fetch(`${API_URL}a=${selectedArea}`);
-          const data = await res.json();
-          meals = data.meals || [];
-        } else if (searchTerm === "") {
-          const fetches = Array.from({ length: 36 }, () => fetch(RANDOM_URL));
-          const responses = await Promise.all(fetches);
-          const dataArr = await Promise.all(responses.map((res) => res.json()));
-          meals = dataArr.map((data) => data.meals[0]);
-        }
-
-        // If both filters are selected, do extra filtering
-        if (!isDefaultCategory && !isDefaultArea) {
-          const detailedFetches = meals.map((meal) =>
-            fetch(
-              `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`
-            )
-              .then((res) => res.json())
-              .then((data) => data.meals[0])
-          );
-          const detailedMeals = await Promise.all(detailedFetches);
-
-          meals = detailedMeals.filter((meal) => meal.strArea === selectedArea);
+            meals = detailedMeals.filter(
+              (meal) => meal.strArea === selectedArea
+            );
+          }
         }
       } catch (error) {
-        console.log("Failed to fetch");
+        console.log("Failed to fetch", error);
         setRecipes([]);
       } finally {
         setRecipes(meals);
