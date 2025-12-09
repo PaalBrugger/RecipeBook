@@ -19,18 +19,18 @@ public class ApplicationDBContext :  IdentityDbContext <ApplicationUser>
     {
         base.OnModelCreating(builder);
 
-        // Composite key for SavedRecipe
-        builder.Entity<SavedRecipe>()
+        // Composite key for Favorited Recipe
+        builder.Entity<FavoritedRecipe>()
             .HasKey(sr => new { sr.UserId, sr.RecipeId });
 
-        builder.Entity<SavedRecipe>()
+        builder.Entity<FavoritedRecipe>()
             .HasOne(sr => sr.User)
-            .WithMany(u => u.SavedRecipes)
+            .WithMany(u => u.FavoritedRecipes)
             .HasForeignKey(sr => sr.UserId);
 
-        builder.Entity<SavedRecipe>()
+        builder.Entity<FavoritedRecipe>()
             .HasOne(sr => sr.Recipe)
-            .WithMany(r => r.SavedByUsers)
+            .WithMany(r => r.FavoritedByUsers)
             .HasForeignKey(sr => sr.RecipeId);
     }
 }

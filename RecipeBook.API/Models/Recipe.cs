@@ -18,5 +18,5 @@ public class Recipe
     public ICollection<Ingredient> Ingredients { get; set; }
 
 
-    public ICollection<SavedRecipe> SavedByUsers { get; set; }
+    public ICollection<FavoritedRecipe> FavoritedByUsers { get; set; }
 }

@@ -12,6 +12,6 @@ public class ApplicationUser : IdentityUser
     public string? PostalCode { get; set; }
     
     // Navigation property for saved recipes
-    public ICollection<SavedRecipe> SavedRecipes { get; set; }
+    public ICollection<FavoritedRecipe> FavoritedRecipes { get; set; }
     
 }
