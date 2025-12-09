@@ -7,7 +7,6 @@ function Recipes() {
   const FILTER_URL = "http://localhost:5091/api/recipe/filter";
   const RANDOM_URL = "http://localhost:5091/api/recipe/random";
   const SEARCH_URL = "http://localhost:5091/api/recipe/search?searchTerm=";
-  const LOOKUP_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?";
 
   const [params, setParams] = useSearchParams();
 
@@ -71,19 +70,13 @@ function Recipes() {
             );
             meals = dataArr.map((data) => data);
           }
-          //TODO
           // If both filters are selected, do extra filtering
           if (!isDefaultCategory && !isDefaultArea) {
-            const detailedFetches = meals.map((meal) =>
-              fetch(`${LOOKUP_URL}i=${meal.idMeal}`)
-                .then((res) => res.json())
-                .then((data) => data.meals[0])
+            const res = await fetch(
+              `${FILTER_URL}?category=${selectedCategory}&area=${selectedArea}`
             );
-            const detailedMeals = await Promise.all(detailedFetches);
-
-            meals = detailedMeals.filter(
-              (meal) => meal.strArea === selectedArea
-            );
+            const data = await res.json();
+            meals = data || [];
           }
         }
       } catch (error) {
