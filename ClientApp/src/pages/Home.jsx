@@ -7,7 +7,7 @@ function Home() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch random recipes from MealDB
+  // Fetch random recipes from API
   useEffect(() => {
     async function fetchRecipes() {
       const fetches = Array.from({ length: 4 }, () => fetch(RANDOM_URL));
