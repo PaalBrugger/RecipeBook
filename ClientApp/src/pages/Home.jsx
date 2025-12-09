@@ -1,6 +1,7 @@
 import RecipeContainer from "../components/RecipeContainer";
 import Hero from "../components/Hero";
 import { useState, useEffect } from "react";
+import { RANDOM_URL } from "../utils/apiUrls";
 
 function Home() {
   const [recipes, setRecipes] = useState([]);
@@ -9,12 +10,9 @@ function Home() {
   // Fetch random recipes from MealDB
   useEffect(() => {
     async function fetchRecipes() {
-      const fetches = Array.from({ length: 4 }, () =>
-        fetch("https://www.themealdb.com/api/json/v1/1/random.php")
-      );
+      const fetches = Array.from({ length: 4 }, () => fetch(RANDOM_URL));
       const responses = await Promise.all(fetches);
-      const dataArr = await Promise.all(responses.map((res) => res.json()));
-      const meals = dataArr.map((data) => data.meals[0]);
+      const meals = await Promise.all(responses.map((res) => res.json()));
 
       setRecipes(meals);
       setIsLoading(false);

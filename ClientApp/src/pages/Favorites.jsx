@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import RecipeCard from "../components/RecipeCard";
 import Spinner from "../components/Spinner";
+import { LOOKUP_ID_URL } from "../utils/apiUrls";
 
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const MEAL_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -21,11 +21,8 @@ function Favorites() {
         setIsLoading(false);
         return;
       }
-
       const fetches = favorites.map((id) =>
-        fetch(MEAL_URL + id)
-          .then((res) => res.json())
-          .then((data) => data.meals[0])
+        fetch(LOOKUP_ID_URL + id).then((res) => res.json())
       );
 
       const results = await Promise.all(fetches);
@@ -48,9 +45,9 @@ function Favorites() {
       ) : (
         <div className="row">
           {recipes.map((recipe) => (
-            <div className="col-md-3 mb-4" key={recipe.idMeal}>
+            <div className="col-md-3 mb-4" key={recipe.id}>
               <Link
-                to={`/recipe/${recipe.idMeal}`}
+                to={`/recipe/${recipe.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <RecipeCard recipe={recipe} />
