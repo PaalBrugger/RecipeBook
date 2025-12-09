@@ -75,9 +75,11 @@ public class RecipeController : ControllerBase
             query = query.Where(r => r.Area == area);
         }
         var recipes = await query.ToListAsync();
-        if(recipes.Count == 0) return NotFound();
+        
+        if(recipes.Count == 0) return Ok(new List<RecipeDTO>());
         
         var recipesDtoList = CreateRecipeDTOList(recipes);
+        
         return Ok(recipesDtoList);
     }
     private RecipeDTO CreateRecipeDTO(Recipe recipe)
