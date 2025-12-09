@@ -2,12 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { areas, categories } from "../utils/dropdownOptions";
 import RecipeContainer from "../components/RecipeContainer";
+import { FILTER_URL, RANDOM_URL, SEARCH_URL } from "../utils/apiUrls";
 
 function Recipes() {
-  const FILTER_URL = "http://localhost:5091/api/recipe/filter";
-  const RANDOM_URL = "http://localhost:5091/api/recipe/random";
-  const SEARCH_URL = "http://localhost:5091/api/recipe/search?searchTerm=";
-
   const [params, setParams] = useSearchParams();
 
   const category = params.get("category") || "Select Category";
