@@ -264,6 +264,7 @@ function Recipes() {
                 }
               }}
             />
+
             {/* Clear search button */}
             {searchInput && (
               <button
@@ -285,6 +286,7 @@ function Recipes() {
           </div>
         </div>
       </div>
+
       {/* Recipes */}
       <div className="pt-4">
         <RecipeContainer
