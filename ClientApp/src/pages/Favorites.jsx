@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import RecipeCard from "../components/RecipeCard";
 import Spinner from "../components/Spinner";
 import { LOOKUP_ID_URL } from "../utils/apiUrls";
+import RecipeContainer from "../components/RecipeContainer";
 
 function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -18,7 +19,6 @@ function Favorites() {
     async function fetchFavorites() {
       if (favorites.length === 0) {
         setRecipes([]);
-        setIsLoading(false);
         return;
       }
       const fetches = favorites.map((id) =>
@@ -33,29 +33,26 @@ function Favorites() {
     fetchFavorites();
   }, [favorites]);
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 12;
+  const totalPages = Math.ceil(recipes.length / recipesPerPage);
+  const paginatedRecipes = recipes.slice(
+    (currentPage - 1) * recipesPerPage,
+    currentPage * recipesPerPage
+  );
 
   return (
-    <div className="container py-5">
+    <div className="py-2">
       <h2 className="mb-4">Your Favorite Recipes 🍽️</h2>
-      {recipes.length === 0 ? (
-        <p>You haven't added any favorites yet.</p>
-      ) : (
-        <div className="row">
-          {recipes.map((recipe) => (
-            <div className="col-md-3 mb-4" key={recipe.id}>
-              <Link
-                to={`/recipe/${recipe.id}`}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <RecipeCard recipe={recipe} />
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="pt-4">
+        <RecipeContainer
+          recipes={paginatedRecipes}
+          isLoading={isLoading}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
+      </div>
     </div>
   );
 }
