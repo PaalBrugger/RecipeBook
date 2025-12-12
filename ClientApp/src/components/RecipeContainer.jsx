@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import RecipeCard from "./RecipeCard";
 import Spinner from "./Spinner";
+import { useEffect } from "react";
 
 function RecipeContainer({
   recipes,
@@ -15,6 +16,11 @@ function RecipeContainer({
         <h2>No recipes 😞</h2>
       </div>
     );
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
   return (
     <div className="container">
       {isLoading ? (
