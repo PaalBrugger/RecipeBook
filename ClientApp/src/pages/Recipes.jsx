@@ -47,21 +47,27 @@ function Recipes() {
         selectedArea === "Select Area" || selectedArea === "All";
 
       try {
+        // Search input
         if (searchTerm !== "") {
           const res = await fetch(`${SEARCH_URL}?searchTerm=${searchTerm}`);
           const data = await res.json();
           meals = data || [];
         } else {
+          // Category selected
           if (!isDefaultCategory) {
             const res = await fetch(
               `${FILTER_URL}?category=${selectedCategory}`
             );
             const data = await res.json();
             meals = data || [];
+
+            // Area selected
           } else if (!isDefaultArea) {
             const res = await fetch(`${FILTER_URL}?area=${selectedArea}`);
             const data = await res.json();
             meals = data || [];
+
+            // No Filter, fetch random recipes
           } else if (searchTerm === "") {
             const fetches = Array.from({ length: 36 }, () => fetch(RANDOM_URL));
             const responses = await Promise.all(fetches);
