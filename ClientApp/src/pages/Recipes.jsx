@@ -40,10 +40,12 @@ function Recipes() {
     async function fetchRecipes() {
       setIsLoading(true);
       let meals = [];
+
       const isDefaultCategory =
         selectedCategory === "Select Category" || selectedCategory === "All";
       const isDefaultArea =
         selectedArea === "Select Area" || selectedArea === "All";
+
       try {
         if (searchTerm !== "") {
           const res = await fetch(`${SEARCH_URL}?searchTerm=${searchTerm}`);
@@ -68,6 +70,7 @@ function Recipes() {
             );
             meals = dataArr.map((data) => data);
           }
+
           // If both filters are selected, do extra filtering
           if (!isDefaultCategory && !isDefaultArea) {
             const res = await fetch(
