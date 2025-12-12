@@ -45,7 +45,7 @@ function Recipes() {
         selectedArea === "Select Area" || selectedArea === "All";
       try {
         if (searchTerm !== "") {
-          const res = await fetch(`${SEARCH_URL}${searchTerm}`);
+          const res = await fetch(`${SEARCH_URL}?searchTerm=${searchTerm}`);
           const data = await res.json();
           meals = data || [];
         } else {
