@@ -35,16 +35,6 @@ function Recipes() {
     currentPage * recipesPerPage
   );
 
-  // Keep track of currentPage
-  useEffect(() => {
-    updateURL({
-      category: selectedCategory,
-      area: selectedArea,
-      search: searchInput,
-      page: currentPage,
-    });
-  }, [currentPage]);
-
   // Filter by category and area
   useEffect(() => {
     async function fetchRecipes() {
@@ -107,21 +97,15 @@ function Recipes() {
     setCurrentPage(page);
   }, [category, area, search, page]);
 
-  // Close dropdown when clicking outside
+  // Keep track of currentPage
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
-        setDropdownOpenCategory(false);
-      }
-
-      if (areaRef.current && !areaRef.current.contains(event.target)) {
-        setDropdownOpenArea(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    updateURL({
+      category: selectedCategory,
+      area: selectedArea,
+      search: searchInput,
+      page: currentPage,
+    });
+  }, [currentPage]);
 
   // Update URL params in order
   function updateURL(newValues) {
@@ -148,6 +132,22 @@ function Recipes() {
     }
     setParams(newParams);
   }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setDropdownOpenCategory(false);
+      }
+
+      if (areaRef.current && !areaRef.current.contains(event.target)) {
+        setDropdownOpenArea(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div>
