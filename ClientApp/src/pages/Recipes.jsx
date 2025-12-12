@@ -10,6 +10,7 @@ function Recipes() {
   const category = params.get("category") || "Select Category";
   const area = params.get("area") || "Select Area";
   const search = params.get("search") || "";
+  const page = Number(params.get("page") || 1);
 
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [selectedArea, setSelectedArea] = useState(area);
@@ -26,13 +27,23 @@ function Recipes() {
   const areaRef = useRef(null);
 
   // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(page);
   const recipesPerPage = 12;
   const totalPages = Math.ceil(recipes.length / recipesPerPage);
   const paginatedRecipes = recipes.slice(
     (currentPage - 1) * recipesPerPage,
     currentPage * recipesPerPage
   );
+
+  // Keep track of currentPage
+  useEffect(() => {
+    updateURL({
+      category: selectedCategory,
+      area: selectedArea,
+      search: searchInput,
+      page: currentPage,
+    });
+  }, [currentPage]);
 
   // Filter by category and area
   useEffect(() => {
@@ -93,7 +104,8 @@ function Recipes() {
     setSelectedArea(area);
     setSearchInput(search);
     setSearchTerm(search);
-  }, [category, area, search]);
+    setCurrentPage(page);
+  }, [category, area, search, page]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -111,21 +123,29 @@ function Recipes() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Update URL params in order
   function updateURL(newValues) {
-    const newParams = new URLSearchParams(params);
-
-    Object.entries(newValues).forEach(([key, value]) => {
-      if (
-        !value ||
-        value === "Select Category" ||
-        value === "Select Area" ||
-        value === "All"
-      ) {
-        newParams.delete(key);
-      } else {
-        newParams.set(key, value);
-      }
-    });
+    const newParams = new URLSearchParams();
+    if (
+      newValues.category &&
+      newValues.category !== "Select Category" &&
+      newValues.category !== "All"
+    ) {
+      newParams.set("category", newValues.category);
+    }
+    if (
+      newValues.area &&
+      newValues.area !== "Select Area" &&
+      newValues.area !== "All"
+    ) {
+      newParams.set("area", newValues.area);
+    }
+    if (newValues.search && newValues.search !== "") {
+      newParams.set("search", newValues.search);
+    }
+    if (newValues.page) {
+      newParams.set("page", newValues.page);
+    }
     setParams(newParams);
   }
 
@@ -160,6 +180,7 @@ function Recipes() {
                             category: cat,
                             area: selectedArea,
                             search: null,
+                            page: 1,
                           });
                         }}
                       >
@@ -199,6 +220,7 @@ function Recipes() {
                             category: selectedCategory,
                             area: area,
                             search: null,
+                            page: 1,
                           });
                         }}
                       >
@@ -228,6 +250,7 @@ function Recipes() {
                     category: null,
                     area: null,
                     search: searchInput,
+                    page: 1,
                   });
                 }
               }}
@@ -243,6 +266,7 @@ function Recipes() {
                     category: null,
                     area: null,
                     search: null,
+                    page: 1,
                   });
                 }}
               >
