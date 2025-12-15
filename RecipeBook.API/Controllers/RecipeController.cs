@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeBook.API.Database;
 using RecipeBook.API.Models;
+using RecipeBook.API.Utility;
 
 namespace RecipeBook.API.Controllers;
 
@@ -11,10 +13,13 @@ namespace RecipeBook.API.Controllers;
 public class RecipeController : ControllerBase
 {
     private readonly ApplicationDBContext _dbContext;
+    private readonly UserManager<ApplicationUser> _userManager;
+
     
     public RecipeController(ApplicationDBContext dbContext, UserManager<ApplicationUser> userManager)
     {
         _dbContext = dbContext;
+        _userManager = userManager;
     }
 
     [HttpGet("{id}")]
@@ -26,7 +31,7 @@ public class RecipeController : ControllerBase
        
        if(recipe == null) return NotFound();
 
-       var recipeDto = CreateRecipeDTO(recipe);
+       var recipeDto = DTOTransformers.CreateRecipeDTO(recipe);
        
        return Ok(recipeDto);
     }
@@ -41,7 +46,7 @@ public class RecipeController : ControllerBase
         
         if(recipe == null) return NotFound();
         
-        var recipeDto = CreateRecipeDTO(recipe);
+        var recipeDto = DTOTransformers.CreateRecipeDTO(recipe);
        
         return Ok(recipeDto);
     }
@@ -56,7 +61,7 @@ public class RecipeController : ControllerBase
         
         if(recipes.Count == 0) return Ok(new List<RecipeDTO>());
         
-        var recipesDto = CreateRecipeDTOList(recipes);
+        var recipesDto = DTOTransformers.CreateRecipeDTOList(recipes);
             
         return Ok(recipesDto);
     }
@@ -78,61 +83,11 @@ public class RecipeController : ControllerBase
         
         if(recipes.Count == 0) return Ok(new List<RecipeDTO>());
         
-        var recipesDtoList = CreateRecipeDTOList(recipes);
+        var recipesDtoList = DTOTransformers.CreateRecipeDTOList(recipes);
         
         return Ok(recipesDtoList);
     }
-    private RecipeDTO CreateRecipeDTO(Recipe recipe)
-    {
-        var dto = new RecipeDTO()
-        {
-                Id = recipe.Id,
-                Name = recipe.Name,
-                Area = recipe.Area,
-                Category = recipe.Category,
-                Instructions = recipe.Instructions,
-                MainImageUrl = recipe.MainImageUrl,
-                Source = recipe.Source,
-                Youtube = recipe.Youtube,
-                Ingredients = recipe.Ingredients
-                    .Select(i => new IngredientDTO
-                    {
-                        Id = i.Id,
-                        Name = i.Name,
-                        Measure = i.Measure
-                    }).ToList()
-        };
-        
-        return dto;
-    }
-    private List<RecipeDTO> CreateRecipeDTOList(List<Recipe> recipes)
-    {
-        var dto = new List<RecipeDTO>();
-
-        foreach (var recipe in recipes)
-        {
-            dto.Add(new RecipeDTO
-            {
-                Id = recipe.Id,
-                Name = recipe.Name,
-                Area = recipe.Area,
-                Category = recipe.Category,
-                Instructions = recipe.Instructions,
-                MainImageUrl = recipe.MainImageUrl,
-                Source = recipe.Source,
-                Youtube = recipe.Youtube,
-                Ingredients = recipe.Ingredients
-                    .Select(i => new IngredientDTO
-                    {
-                        Id = i.Id,
-                        Name = i.Name,
-                        Measure = i.Measure
-                    }).ToList()
-            });
-        }
-
-        return dto;
-    }
-
+    
+    
     
 }
