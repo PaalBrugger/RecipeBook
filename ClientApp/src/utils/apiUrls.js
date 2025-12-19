@@ -7,3 +7,4 @@ export const LOOKUP_ID_URL = `${API_BASE_URL}/recipe/`;
 export const FAVORITE_RECIPE_URL = `${API_BASE_URL}/recipe/favorite-recipe`;
 export const UNFAVORITE_RECIPE_URL = `${API_BASE_URL}/recipe/unfavorite-recipe`;
 export const ISFAVORITED_RECIPE_URL = `${API_BASE_URL}/recipe/is-favorited`;
+export const GET_FAVORITED_RECIPES = `${API_BASE_URL}/recipe/get-favorited-recipes`;
