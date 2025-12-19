@@ -45,7 +45,6 @@ function RecipeDetails() {
         throw new Error("Failed to fetch favorite status");
       }
       const data = await res.json();
-      console.log(data);
       setIsFavorite(data.isFavorited);
     }
     isFavorited();
