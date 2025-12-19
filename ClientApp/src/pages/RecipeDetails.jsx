@@ -1,21 +1,28 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../services/AuthProvider";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import styles from "./RecipeDetails.module.css";
+import {
+  LOOKUP_ID_URL,
+  ISFAVORITED_RECIPE_URL,
+  FAVORITE_RECIPE_URL,
+  UNFAVORITE_RECIPE_URL,
+} from "../utils/apiUrls";
 
 function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const { token } = useAuth();
 
   const { id } = useParams();
 
-  const MEAL_URL = "http://localhost:5091/api/recipe/";
   useEffect(() => {
-    async function fetchrecipe() {
+    async function fetchRecipe() {
       try {
-        const res = await fetch(MEAL_URL + id);
+        const res = await fetch(LOOKUP_ID_URL + id);
         const data = await res.json();
 
         setRecipe(data);
@@ -23,25 +30,56 @@ function RecipeDetails() {
         console.error("Failed to fetch recipe:", error);
       }
     }
-    fetchrecipe();
+    fetchRecipe();
   }, [id]);
 
+  // Check if the recipe is favorited
   useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setIsFavorite(favorites.includes(id));
+    async function isFavorited() {
+      const res = await fetch(`${ISFAVORITED_RECIPE_URL}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) {
+        throw new Error("Failed to fetch favorite status");
+      }
+      const data = await res.json();
+      console.log(data);
+      setIsFavorite(data.isFavorited);
+    }
+    isFavorited();
   }, [id]);
 
-  const toggleFavorite = () => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    let updated;
-    if (favorites.includes(id)) {
-      updated = favorites.filter((fav) => fav !== id);
-    } else {
-      updated = [...favorites, id];
+  async function toggleFavorite() {
+    if (!isFavorite) {
+      const res = await fetch(FAVORITE_RECIPE_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(id),
+      });
+      if (res.ok) {
+        setIsFavorite(true);
+      }
     }
-    localStorage.setItem("favorites", JSON.stringify(updated));
-    setIsFavorite(updated.includes(id));
-  };
+
+    if (isFavorite) {
+      const res = await fetch(UNFAVORITE_RECIPE_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(id),
+      });
+      if (res.ok) {
+        setIsFavorite(false);
+      }
+    }
+  }
 
   if (!recipe) return <Spinner />;
 
