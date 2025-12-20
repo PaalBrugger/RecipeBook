@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -8,6 +9,7 @@ export function AuthProvider({ children }) {
     return savedUser ? JSON.parse(savedUser) : null;
   });
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const navigate = useNavigate();
 
   async function register(
     username,
@@ -85,6 +87,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setToken(null);
+    navigate("/");
   }
 
   const value = {
