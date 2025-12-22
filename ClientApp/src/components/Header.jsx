@@ -24,9 +24,15 @@ function Header() {
           <Link to="Recipes" className={styles["btn-glow-blue"]}>
             Recipes
           </Link>
-          <Link to="Favorites" className={styles["btn-glow-blue"]}>
-            Favorites
-          </Link>
+          {isAuthenticated ? (
+            <Link to="Favorites" className={styles["btn-glow-blue"]}>
+              Favorites
+            </Link>
+          ) : (
+            <Link to="Login" className={styles["btn-glow-blue"]}>
+              Favorites
+            </Link>
+          )}
 
           {isAuthenticated ? (
             <Link to="User" className={styles["btn-glow-orange"]}>
