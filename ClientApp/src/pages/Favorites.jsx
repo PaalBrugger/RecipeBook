@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GET_FAVORITED_RECIPES_URL } from "../utils/apiUrls";
 import { useAuth } from "../services/AuthProvider";
 import { authFetch } from "../utils/authFetch";
+import { toast } from "react-toastify";
 import RecipeContainer from "../components/RecipeContainer";
 
 function Favorites() {
@@ -11,12 +12,18 @@ function Favorites() {
 
   useEffect(() => {
     async function fetchFavorites() {
-      const res = await authFetch(GET_FAVORITED_RECIPES_URL, {}, logout);
-      const data = await res.json();
-      setRecipes(data);
-      setIsLoading(false);
-    }
+      try {
+        const res = await authFetch(GET_FAVORITED_RECIPES_URL, {}, logout);
+        const data = await res.json();
+        setRecipes(data);
+        setIsLoading(false);
 
+        // Catch 401 Unauthorized
+      } catch (error) {
+        console.log("Request failed:", error.message);
+        toast.error("Unauthorized");
+      }
+    }
     fetchFavorites();
   }, []);
 

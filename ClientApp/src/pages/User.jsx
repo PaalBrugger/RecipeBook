@@ -5,7 +5,7 @@ import { USER_URL } from "../utils/apiUrls";
 import { authFetch } from "../utils/authFetch";
 
 function User() {
-  const { logout, token } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogout(e) {
@@ -26,24 +26,30 @@ function User() {
       )
     )
       return;
+    try {
+      const response = await authFetch(
+        USER_URL,
+        {
+          method: "DELETE",
+        },
+        logout
+      );
 
-    const response = await authFetch(
-      USER_URL,
-      {
-        method: "DELETE",
-      },
-      logout
-    );
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Delete failed:", error);
+        toast.error("Failed to delete user");
+        return;
+      }
+      toast.success("Account deleted successfully 🗑️");
+      await logout();
+      navigate("/");
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error("Delete failed:", error);
-      toast.error("Failed to delete user");
-      return;
+      // Catch 401 Unauthorized
+    } catch (error) {
+      console.log("Request failed:", error.message);
+      toast.error("Unauthorized");
     }
-    toast.success("Account deleted successfully 🗑️");
-    await logout();
-    navigate("/");
   }
 
   return (

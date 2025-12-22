@@ -7,7 +7,7 @@ import { authFetch } from "../utils/authFetch";
 import { USER_URL } from "../utils/apiUrls";
 
 function EditUser() {
-  const { token, logout } = useAuth();
+  const { logout } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -37,40 +37,47 @@ function EditUser() {
   // Update user data
   async function handleSubmit(e) {
     e.preventDefault();
-
-    const response = await authFetch(
-      USER_URL,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await authFetch(
+        USER_URL,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            email,
+            name,
+            city,
+            country,
+            postalCode,
+          }),
         },
-        body: JSON.stringify({
-          username,
-          email,
-          name,
-          city,
-          country,
-          postalCode,
-        }),
-      },
-      logout
-    );
+        logout
+      );
+      const data = await response.json();
 
-    if (!response.ok) {
-      console.error("Update failed");
-      throw new Error("Failed to update user");
-    }
-    toast.success(`Changes saved 💾`);
+      if (!response.ok) {
+        console.error("Update failed:", data);
+        return;
+      }
+      toast.success(`Changes saved 💾`);
 
-    if (oldUsernameRef.current !== username) {
-      await logout();
-      toast.info("Logged out");
-      navigate("/");
-    } else {
-      navigate(-1);
+      // Logout if username is edited
+      if (oldUsernameRef.current !== username) {
+        await logout();
+        toast.info("Logged out");
+        navigate("/");
+      } else {
+        navigate(-1);
+      }
+
+      // Catch 401 Unauthorized
+    } catch (error) {
+      console.log("Request failed:", error.message);
+      toast.error("Unauthorized");
     }
-    return await response.json();
   }
 
   return (
