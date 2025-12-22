@@ -1,23 +1,17 @@
 import { useEffect, useState } from "react";
-import { GET_FAVORITED_RECIPES } from "../utils/apiUrls";
+import { GET_FAVORITED_RECIPES_URL } from "../utils/apiUrls";
 import { useAuth } from "../services/AuthProvider";
+import { authFetch } from "../utils/authFetch";
 import RecipeContainer from "../components/RecipeContainer";
 
 function Favorites() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { token } = useAuth();
+  const { logout } = useAuth();
 
   useEffect(() => {
     async function fetchFavorites() {
-      const res = await fetch(GET_FAVORITED_RECIPES, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) {
-        throw new Error("Failed to fetch favorite status");
-      }
+      const res = await authFetch(GET_FAVORITED_RECIPES_URL, {}, logout);
       const data = await res.json();
       setRecipes(data);
       setIsLoading(false);

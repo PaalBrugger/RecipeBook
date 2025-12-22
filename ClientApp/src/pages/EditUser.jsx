@@ -3,6 +3,8 @@ import { useAuth } from "../services/AuthProvider";
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../utils/authFetch";
+import { USER_URL } from "../utils/apiUrls";
 
 function EditUser() {
   const { token, logout } = useAuth();
@@ -19,15 +21,7 @@ function EditUser() {
 
   // Load user data
   useEffect(() => {
-    if (!token) return;
-
-    fetch("http://localhost:5091/api/user/me", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
+    authFetch(USER_URL, {}, logout)
       .then((res) => res.json())
       .then((data) => {
         oldUsernameRef.current = data.userName;
@@ -38,26 +32,30 @@ function EditUser() {
         setCountry(data.country);
         setPostalCode(data.postalCode);
       });
-  }, [token]);
+  }, []);
 
   // Update user data
   async function handleSubmit(e) {
     e.preventDefault();
-    const response = await fetch("http://localhost:5091/api/user/me", {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+
+    const response = await authFetch(
+      USER_URL,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          name,
+          city,
+          country,
+          postalCode,
+        }),
       },
-      body: JSON.stringify({
-        username,
-        email,
-        name,
-        city,
-        country,
-        postalCode,
-      }),
-    });
+      logout
+    );
 
     if (!response.ok) {
       console.error("Update failed");

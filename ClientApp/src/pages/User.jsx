@@ -1,6 +1,8 @@
 import { useAuth } from "../services/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { USER_URL } from "../utils/apiUrls";
+import { authFetch } from "../utils/authFetch";
 
 function User() {
   const { logout, token } = useAuth();
@@ -11,7 +13,6 @@ function User() {
     try {
       await logout();
       toast.info("Logged out");
-      navigate("/");
     } catch (err) {
       alert(err.message);
     }
@@ -26,17 +27,17 @@ function User() {
     )
       return;
 
-    const response = await fetch("http://localhost:5091/api/user/me", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const response = await authFetch(
+      USER_URL,
+      {
+        method: "DELETE",
       },
-    });
+      logout
+    );
 
     if (!response.ok) {
       const error = await response.json();
-      console.error("Delete failed:");
+      console.error("Delete failed:", error);
       toast.error("Failed to delete user");
       return;
     }
