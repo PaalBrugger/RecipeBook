@@ -58,9 +58,9 @@ function RecipeDetails() {
   async function toggleFavorite() {
     if (!isAuthenticated) {
       // Redirect to login and redirect back after
-      navigate("/login", {
+      navigate("/Login", {
         state: {
-          from: `/recipe/${id}`,
+          from: `/Recipe/${id}`,
         },
         replace: true,
       });
