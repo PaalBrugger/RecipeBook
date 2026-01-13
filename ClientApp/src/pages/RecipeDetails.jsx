@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../services/AuthProvider";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
@@ -15,7 +15,8 @@ import {
 function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const { token } = useAuth();
+  const { token, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -36,13 +37,17 @@ function RecipeDetails() {
   // Check if the recipe is favorited
   useEffect(() => {
     async function isFavorited() {
+      if (!isAuthenticated) {
+        return;
+      }
       const res = await fetch(`${ISFAVORITED_RECIPE_URL}/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       if (!res.ok) {
-        throw new Error("Failed to fetch favorite status");
+        console.log("Failed to fetch favorite status");
+        return;
       }
       const data = await res.json();
       setIsFavorite(data.isFavorited);
@@ -51,6 +56,11 @@ function RecipeDetails() {
   }, [id]);
 
   async function toggleFavorite() {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
     if (!isFavorite) {
       const res = await fetch(FAVORITE_RECIPE_URL, {
         method: "POST",
