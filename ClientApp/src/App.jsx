@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import EditUser from "./pages/EditUser";
 import User from "./pages/User";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
       <ToastContainer position="top-right" autoClose={1500} />

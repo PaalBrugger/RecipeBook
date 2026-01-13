@@ -26,8 +26,13 @@ function RecipeDetails() {
         const res = await fetch(LOOKUP_ID_URL + id);
         const data = await res.json();
 
+        if (!res.ok) {
+          navigate("/not-found", { replace: true });
+          return;
+        }
         setRecipe(data);
       } catch (error) {
+        navigate("/not-found", { replace: true });
         console.error("Failed to fetch recipe:", error);
       }
     }
