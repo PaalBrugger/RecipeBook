@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { validatePassword } from "../utils/helpers";
 
@@ -23,17 +23,21 @@ function Login() {
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [usernameAvailableMessage, setUsernameAvailableMessage] = useState("");
 
+  // Redirect to previous page
+  const location = useLocation();
+  const from = location.state?.from || "/";
+
   async function handleLogin(e) {
     e.preventDefault();
     try {
       await login(loginUsername, loginPassword);
       toast.success(`Hello ${loginUsername}🌮`);
-      navigate("/");
+      navigate(from, { replace: true });
     } catch (err) {
       toast.error(err.message);
-    } finally {
     }
   }
+
   async function handleRegister(e) {
     e.preventDefault();
 
