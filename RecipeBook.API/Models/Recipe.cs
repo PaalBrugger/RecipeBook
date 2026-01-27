@@ -13,6 +13,9 @@ public class Recipe
     public string? Description { get; set; }
     public string? Source  { get; set; }
     public string? Youtube  { get; set; }
+    
+    public string? UserId { get; set; }
+    public ApplicationUser? User { get; set; }
 
     public ICollection<RecipeImage> ImageGallery { get; set; }
     public ICollection<Ingredient> Ingredients { get; set; }

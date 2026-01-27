@@ -33,5 +33,11 @@ public class ApplicationDBContext :  IdentityDbContext <ApplicationUser>
             .HasOne(sr => sr.Recipe)
             .WithMany(r => r.FavoritedByUsers)
             .HasForeignKey(sr => sr.RecipeId);
+        
+        builder.Entity<Recipe>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.CreatedRecipes)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

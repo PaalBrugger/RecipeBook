@@ -13,5 +13,7 @@ public class ApplicationUser : IdentityUser
     
     // Navigation property for saved recipes
     public ICollection<FavoritedRecipe> FavoritedRecipes { get; set; } = new List<FavoritedRecipe>();
+    
+    public ICollection<Recipe> CreatedRecipes { get; set; } = new List<Recipe>();
 
 }
