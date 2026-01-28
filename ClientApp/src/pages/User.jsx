@@ -54,20 +54,20 @@ function User() {
 
   return (
     <div>
-      <Link to="" className="btn mt-5 btn-primary">
-        My recipes
+      <Link to="/UserRecipes" className="btn mt-5 w-50 btn-primary">
+        My Recipes
       </Link>
       <br />
-      <Link to="/EditUser" className="btn mt-3 btn-primary">
-        Edit user
+      <Link to="/EditUser" className="btn mt-3 w-50 btn-primary">
+        Edit User
       </Link>
       <br />
-      <button onClick={handleLogout} className="btn btn-primary mt-3">
-        Signout
+      <button onClick={handleLogout} className="btn btn-primary w-50 mt-3">
+        Logout
       </button>
       <br />
-      <button onClick={handleDelete} className="btn btn-danger mt-3">
-        Delete user
+      <button onClick={handleDelete} className="btn btn-danger w-50 mt-3">
+        Delete User
       </button>
     </div>
   );
