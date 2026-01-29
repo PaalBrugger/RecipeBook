@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RecipeBook.API.Database;
 using RecipeBook.API.Models;
+using RecipeBook.API.Utility;
 
 namespace RecipeBook.API.Controllers;
 
@@ -10,10 +13,12 @@ namespace RecipeBook.API.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    private readonly ApplicationDBContext _dbContext;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public UserController(UserManager<ApplicationUser> userManager)
+    public UserController(ApplicationDBContext dbContext, UserManager<ApplicationUser> userManager)
     {
+        _dbContext = dbContext;
         _userManager = userManager;
     }
 
@@ -67,5 +72,74 @@ public class UserController : ControllerBase
         if (result.Succeeded) return Ok(new {message = "User Deleted Successfully"});
         
         return BadRequest(new {result.Errors});
+    }
+    
+    [HttpPost("favorite-recipe")]
+    public async Task<IActionResult> FavoriteRecipe([FromBody] int recipeId)     // Move to usercontroller
+
+    {
+        var userId = _userManager.GetUserId(User);
+        if(userId == null) return Unauthorized();
+        
+        var recipeExists = await _dbContext.Recipes.AnyAsync(r => r.Id == recipeId);
+        if (!recipeExists) return NotFound();
+
+        var favoritedrecipe = new FavoritedRecipe()
+        {
+            RecipeId = recipeId,
+            UserId = userId,
+        };
+        
+        _dbContext.FavoritedRecipes.Add(favoritedrecipe);
+        await _dbContext.SaveChangesAsync();
+        
+        return Ok();
+    }
+    
+    [HttpPost("unfavorite-recipe")]
+    public async Task<IActionResult> UnfavoriteRecipe([FromBody] int recipeId)
+    {
+        var userId = _userManager.GetUserId(User);
+        if(userId == null) return Unauthorized();
+        
+        var alreadyFavorited =
+            await _dbContext.FavoritedRecipes
+                .Where(r => r.RecipeId == recipeId && r.UserId == userId)
+                .FirstOrDefaultAsync();
+
+        if (alreadyFavorited != null)
+        {
+            _dbContext.FavoritedRecipes.Remove(alreadyFavorited);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+        return NotFound();
+    }
+    
+    [HttpGet("is-favorited/{recipeId}")]
+    public async Task<IActionResult> IsFavorited(int recipeId)
+    {
+        var userId = _userManager.GetUserId(User);
+        if(userId == null) return Unauthorized();
+        
+        var isFavorited = await _dbContext.FavoritedRecipes
+            .AnyAsync(r => r.RecipeId == recipeId && r.UserId == userId); 
+        
+        return Ok(new {isFavorited});
+    }
+    
+    [HttpGet("get-favorited-recipes")]
+    public async Task<IActionResult> GetFavoritedRecipes()
+    {
+        var userId = _userManager.GetUserId(User);
+        if(userId == null) return Unauthorized();
+    
+        var favoritedRecipesDTO = await _dbContext.FavoritedRecipes
+            .Include(r => r.Recipe.Ingredients)
+            .Where(r => r.UserId == userId)
+            .Select(fav => DTOTransformers.CreateRecipeDTO(fav.Recipe))
+            .ToListAsync();
+        
+        return Ok(favoritedRecipesDTO);
     }
 }

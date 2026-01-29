@@ -13,13 +13,10 @@ namespace RecipeBook.API.Controllers;
 public class RecipeController : ControllerBase
 {
     private readonly ApplicationDBContext _dbContext;
-    private readonly UserManager<ApplicationUser> _userManager;
-
     
-    public RecipeController(ApplicationDBContext dbContext, UserManager<ApplicationUser> userManager)
+    public RecipeController(ApplicationDBContext dbContext)
     {
         _dbContext = dbContext;
-        _userManager = userManager;
     }
 
     [HttpGet("{id}")]
@@ -87,77 +84,4 @@ public class RecipeController : ControllerBase
         
         return Ok(recipesDtoList);
     }
-    
-    [Authorize]
-    [HttpPost("favorite-recipe")]
-    public async Task<IActionResult> FavoriteRecipe([FromBody] int recipeId)
-    {
-        var userId = _userManager.GetUserId(User);
-        if(userId == null) return Unauthorized();
-        
-        var recipeExists = await _dbContext.Recipes.AnyAsync(r => r.Id == recipeId);
-        if (!recipeExists) return NotFound();
-
-        var favoritedrecipe = new FavoritedRecipe()
-        {
-            RecipeId = recipeId,
-            UserId = userId,
-        };
-        
-        _dbContext.FavoritedRecipes.Add(favoritedrecipe);
-        await _dbContext.SaveChangesAsync();
-        
-        return Ok();
-    }
-    
-    [Authorize]
-    [HttpPost("unfavorite-recipe")]
-    public async Task<IActionResult> UnfavoriteRecipe([FromBody] int recipeId)
-    {
-        var userId = _userManager.GetUserId(User);
-        if(userId == null) return Unauthorized();
-        
-        var alreadyFavorited =
-            await _dbContext.FavoritedRecipes
-                .Where(r => r.RecipeId == recipeId && r.UserId == userId)
-                .FirstOrDefaultAsync();
-
-        if (alreadyFavorited != null)
-        {
-            _dbContext.FavoritedRecipes.Remove(alreadyFavorited);
-            await _dbContext.SaveChangesAsync();
-            return Ok();
-        }
-        return NotFound();
-    }
-    
-    [Authorize]
-    [HttpGet("is-favorited/{recipeId}")]
-    public async Task<IActionResult> IsFavorited(int recipeId)
-    {
-        var userId = _userManager.GetUserId(User);
-        if(userId == null) return Unauthorized();
-        
-        var isFavorited = await _dbContext.FavoritedRecipes
-            .AnyAsync(r => r.RecipeId == recipeId && r.UserId == userId); 
-        
-        return Ok(new {isFavorited});
-    }
-
-    [Authorize]
-    [HttpGet("get-favorited-recipes")]
-    public async Task<IActionResult> GetFavoritedRecipes()
-    {
-        var userId = _userManager.GetUserId(User);
-        if(userId == null) return Unauthorized();
-
-        var favoritedRecipesDTO = await _dbContext.FavoritedRecipes
-            .Include(r => r.Recipe.Ingredients)
-            .Where(r => r.UserId == userId)
-            .Select(fav => DTOTransformers.CreateRecipeDTO(fav.Recipe))
-            .ToListAsync();
-        
-        return Ok(favoritedRecipesDTO);
-    }
-    
 }
