@@ -56,8 +56,6 @@ public class RecipeController : ControllerBase
             .Where(r => r.Name.Contains(searchTerm.ToLower()))
             .ToListAsync();
         
-        if(recipes.Count == 0) return Ok(new List<RecipeDTO>());
-        
         var recipesDto = DTOTransformers.CreateRecipeDTOList(recipes);
             
         return Ok(recipesDto);
@@ -77,8 +75,6 @@ public class RecipeController : ControllerBase
             query = query.Where(r => r.Area == area);
         }
         var recipes = await query.ToListAsync();
-        
-        if(recipes.Count == 0) return Ok(new List<RecipeDTO>());
         
         var recipesDtoList = DTOTransformers.CreateRecipeDTOList(recipes);
         
