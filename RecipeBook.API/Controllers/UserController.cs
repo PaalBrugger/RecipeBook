@@ -142,4 +142,30 @@ public class UserController : ControllerBase
         
         return Ok(favoritedRecipesDTO);
     }
+    [HttpGet("get-user-created-recipes")]
+    public async Task<IActionResult> GetUserCreatedRecipes()
+    {
+        return NotFound();
+    }
+
+    [HttpPost("create-recipe")]
+    public async Task<IActionResult> CreateRecipe([FromForm] RecipeCreateDTO recipeDto)
+    {
+        if(!ModelState.IsValid) return BadRequest(ModelState);
+        var recipe = new Recipe{ Name = recipeDto.Name, Category = recipeDto.Category, 
+            Area = recipeDto.Area,Description = recipeDto.Description,
+            Instructions = recipeDto.Instructions, Source = recipeDto.Source, 
+            Youtube = recipeDto.Youtube, UserId = _userManager.GetUserId(User)};
+        
+        _dbContext.Recipes.Add(recipe);
+        await _dbContext.SaveChangesAsync();
+        
+        return Ok();
+    }
+    
+    [HttpPut("update-recipe")]
+    public async Task<IActionResult> UpdateRecipe()
+    {
+        return NotFound();
+    }
 }
