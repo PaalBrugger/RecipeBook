@@ -11,7 +11,7 @@ function BackButton({ className, style, buttonText }) {
         onClick={() => navigate(-1)}
         style={style}
       >
-        {buttontext ? buttontext : "⬅ Back"}
+        {buttonText ? buttonText : "⬅ Back"}
       </button>
     </div>
   );
