@@ -11,3 +11,7 @@ export const ISFAVORITED_RECIPE_URL = `${API_BASE_URL}/user/is-favorited`;
 export const GET_FAVORITED_RECIPES_URL = `${API_BASE_URL}/user/get-favorited-recipes`;
 
 export const USER_URL = `${API_BASE_URL}/user/me`;
+
+export const CREATE_RECIPE_URL = `${API_BASE_URL}/user/create-recipe`;
+export const GET_USER_CREATED_RECIPES_URL = `${API_BASE_URL}/user/get-user-created-recipes`;
+export const UPDATE_RECIPE_URL = `${API_BASE_URL}/user/update-recipe`;
