@@ -13,6 +13,8 @@ import EditUser from "./pages/EditUser";
 import User from "./pages/User";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
+import UserRecipes from "./pages/UserRecipes";
+import CreateRecipe from "./pages/CreateRecipe";
 
 function App() {
   return (
@@ -29,6 +31,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <User />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="UserRecipes"
+            element={
+              <ProtectedRoute>
+                <UserRecipes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="CreateRecipe"
+            element={
+              <ProtectedRoute>
+                <CreateRecipe />
               </ProtectedRoute>
             }
           />
