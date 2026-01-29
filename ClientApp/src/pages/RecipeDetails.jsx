@@ -5,6 +5,7 @@ import { useAuth } from "../services/AuthProvider";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import styles from "./RecipeDetails.module.css";
+import { authFetch } from "../utils/authFetch";
 import {
   LOOKUP_ID_URL,
   ISFAVORITED_RECIPE_URL,
@@ -15,7 +16,7 @@ import {
 function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const { token, isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -45,11 +46,11 @@ function RecipeDetails() {
       if (!isAuthenticated) {
         return;
       }
-      const res = await fetch(`${ISFAVORITED_RECIPE_URL}/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await authFetch(
+        `${ISFAVORITED_RECIPE_URL}/${id}`,
+        {},
+        logout
+      );
       if (!res.ok) {
         console.log("Failed to fetch favorite status");
         return;
@@ -74,28 +75,34 @@ function RecipeDetails() {
     }
 
     if (!isFavorite) {
-      const res = await fetch(FAVORITE_RECIPE_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const res = await authFetch(
+        FAVORITE_RECIPE_URL,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(id),
         },
-        body: JSON.stringify(id),
-      });
+        logout
+      );
       if (res.ok) {
         setIsFavorite(true);
       }
     }
 
     if (isFavorite) {
-      const res = await fetch(UNFAVORITE_RECIPE_URL, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const res = await authFetch(
+        UNFAVORITE_RECIPE_URL,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(id),
         },
-        body: JSON.stringify(id),
-      });
+        logout
+      );
       if (res.ok) {
         setIsFavorite(false);
       }
