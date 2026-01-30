@@ -6,6 +6,7 @@ import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import styles from "./RecipeDetails.module.css";
 import { authFetch } from "../utils/authFetch";
+import { resolveImageUrl } from "../utils/helpers";
 import {
   LOOKUP_ID_URL,
   ISFAVORITED_RECIPE_URL,
@@ -25,12 +26,13 @@ function RecipeDetails() {
     async function fetchRecipe() {
       try {
         const res = await fetch(LOOKUP_ID_URL + id);
-        const data = await res.json();
 
         if (!res.ok) {
           navigate("/not-found", { replace: true });
           return;
         }
+
+        const data = await res.json();
         setRecipe(data);
       } catch (error) {
         navigate("/not-found", { replace: true });
@@ -111,6 +113,8 @@ function RecipeDetails() {
 
   if (!recipe) return <Spinner />;
 
+  const imageUrl = resolveImageUrl(recipe.mainImageUrl);
+
   return (
     <div className="container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -125,11 +129,13 @@ function RecipeDetails() {
       <div className={`card p-4 shadow rounded-4 ${styles["card-background"]}`}>
         <div className="row">
           <div className="col-md-5">
-            <img
-              src={recipe.mainImageUrl}
-              alt={recipe.name}
-              className="img-fluid rounded-4"
-            />
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt={recipe.name}
+                className="img-fluid rounded-4"
+              />
+            ) : null}
           </div>
           <div className="col-md-7">
             <h2>{recipe.name}</h2>
