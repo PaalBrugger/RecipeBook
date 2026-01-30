@@ -1,3 +1,4 @@
+export const BASE_URL = "http://localhost:5091";
 export const API_BASE_URL = "http://localhost:5091/api";
 
 export const FILTER_URL = `${API_BASE_URL}/recipe/filter`;
