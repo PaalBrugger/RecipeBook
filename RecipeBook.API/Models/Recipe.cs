@@ -17,9 +17,7 @@ public class Recipe
     public string? UserId { get; set; }
     public ApplicationUser? User { get; set; }
 
-    public ICollection<RecipeImage> ImageGallery { get; set; }
-    public ICollection<Ingredient> Ingredients { get; set; }
-
-
-    public ICollection<FavoritedRecipe> FavoritedByUsers { get; set; }
+    public ICollection<RecipeImage> ImageGallery { get; set; } = new List<RecipeImage>();
+    public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+    public ICollection<FavoritedRecipe> FavoritedByUsers { get; set; } = new List<FavoritedRecipe>();
 }
