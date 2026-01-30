@@ -11,6 +11,7 @@ public class RecipeDTO
     public string? MainImageUrl { get; set; }
     public string? Source  { get; set; }
     public string? Youtube  { get; set; }
+    public string? UserId { get; set; }
     
     public List<IngredientDTO> Ingredients { get; set; }
 }
