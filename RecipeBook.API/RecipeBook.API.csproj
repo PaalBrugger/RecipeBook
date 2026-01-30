@@ -25,5 +25,8 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="9.0.9" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="wwwroot\uploads\recipes\" />
+    </ItemGroup>
 
 </Project>
