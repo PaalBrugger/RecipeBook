@@ -145,17 +145,41 @@ public class UserController : ControllerBase
     [HttpGet("get-user-created-recipes")]
     public async Task<IActionResult> GetUserCreatedRecipes()
     {
-        return NotFound();
+        var userId = _userManager.GetUserId(User);
+        var recipes = await _dbContext.Recipes
+             .Include(r => r.Ingredients)
+             .Where(r => r.UserId == userId)
+             .ToListAsync();
+        
+        var recipesDto = DTOTransformers.CreateRecipeDTOList(recipes);
+            
+        return Ok(recipesDto);
     }
 
     [HttpPost("create-recipe")]
     public async Task<IActionResult> CreateRecipe([FromForm] RecipeCreateDTO recipeDto)
     {
         if(!ModelState.IsValid) return BadRequest(ModelState);
+        
         var recipe = new Recipe{ Name = recipeDto.Name, Category = recipeDto.Category, 
             Area = recipeDto.Area,Description = recipeDto.Description,
             Instructions = recipeDto.Instructions, Source = recipeDto.Source, 
-            Youtube = recipeDto.Youtube, UserId = _userManager.GetUserId(User)};
+            Youtube = recipeDto.Youtube, UserId = _userManager.GetUserId(User),
+            Ingredients = recipeDto.Ingredients?
+                .Where(i => !string.IsNullOrWhiteSpace(i.Name))
+                .Select(i => new Ingredient
+                {
+                    Name = i.Name!.Trim(),
+                    Measure = i.Measure ?? ""
+                })
+                .ToList() ?? new List<Ingredient>()
+        };
+        if (recipeDto.ImageFile != null)
+        {
+            var imageUrl = await HelperMethods.SaveImageAsync(recipeDto.ImageFile);
+             recipe.MainImageUrl = imageUrl;
+             recipe.ImageGallery.Add(new RecipeImage{ ImageUrl = imageUrl});
+        }
         
         _dbContext.Recipes.Add(recipe);
         await _dbContext.SaveChangesAsync();
