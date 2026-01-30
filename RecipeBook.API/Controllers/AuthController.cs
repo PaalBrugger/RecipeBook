@@ -87,7 +87,7 @@ public class AuthController : ControllerBase
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), userId = user.Id });
         }
 
         return Unauthorized();
