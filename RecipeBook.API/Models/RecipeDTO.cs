@@ -13,5 +13,7 @@ public class RecipeDTO
     public string? Youtube  { get; set; }
     public string? UserId { get; set; }
     
+    public string? UserName { get; set; }
+    
     public List<IngredientDTO> Ingredients { get; set; }
 }

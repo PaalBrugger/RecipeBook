@@ -24,6 +24,7 @@ public class RecipeController : ControllerBase
     {
        var recipe = await _dbContext.Recipes
            .Include(r => r.Ingredients)
+           .Include(r => r.User)
            .FirstOrDefaultAsync(r => r.Id == id); 
        
        if(recipe == null) return NotFound();

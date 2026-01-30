@@ -17,6 +17,7 @@ public static class DTOTransformers
             Source = recipe.Source,
             Youtube = recipe.Youtube,
             UserId = recipe.UserId,
+            UserName = recipe.User?.UserName,
             Ingredients = recipe.Ingredients
                 .Select(i => new IngredientDTO
                 {
