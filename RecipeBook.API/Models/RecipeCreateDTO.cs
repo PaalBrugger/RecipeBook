@@ -10,11 +10,9 @@ public class RecipeCreateDTO
     public string Category { get; set; }
     [Required]
     public string Area { get; set; }
-    [Required]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public string? Source { get; set; }
     public string? Youtube { get; set; }
-
     public string? Instructions { get; set; }
 
     public IFormFile? ImageFile { get; set; }
