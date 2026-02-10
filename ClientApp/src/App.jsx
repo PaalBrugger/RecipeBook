@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorPage from "./pages/ErrorPage";
 import UserRecipes from "./pages/UserRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
+import EditRecipe from "./pages/EditRecipe";
 
 function App() {
   return (
@@ -47,6 +48,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <CreateRecipe />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="EditRecipe/:id"
+            element={
+              <ProtectedRoute>
+                <EditRecipe />
               </ProtectedRoute>
             }
           />
