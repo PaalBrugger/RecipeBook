@@ -31,6 +31,7 @@ function EditRecipe() {
       prev.map((ing, i) => (i === index ? { ...ing, [field]: value } : ing))
     );
   }
+
   function addIngredient() {
     // Dont add row if last row is empty
     const last = ingredients[ingredients.length - 1];
@@ -56,6 +57,7 @@ function EditRecipe() {
     setImageFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   }
+
   // Fetch recipe
   useEffect(() => {
     async function fetchRecipe() {
