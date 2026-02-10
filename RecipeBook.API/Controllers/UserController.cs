@@ -75,8 +75,7 @@ public class UserController : ControllerBase
     }
     
     [HttpPost("favorite-recipe")]
-    public async Task<IActionResult> FavoriteRecipe([FromBody] int recipeId)     // Move to usercontroller
-
+    public async Task<IActionResult> FavoriteRecipe([FromBody] int recipeId)   
     {
         var userId = _userManager.GetUserId(User);
         if(userId == null) return Unauthorized();
@@ -165,6 +164,7 @@ public class UserController : ControllerBase
             Area = recipeDto.Area,Description = recipeDto.Description,
             Instructions = recipeDto.Instructions, Source = recipeDto.Source, 
             Youtube = recipeDto.Youtube, UserId = _userManager.GetUserId(User),
+            ModifiedAt = DateTime.UtcNow,
             Ingredients = recipeDto.Ingredients?
                 .Where(i => !string.IsNullOrWhiteSpace(i.Name))
                 .Select(i => new Ingredient
@@ -187,9 +187,50 @@ public class UserController : ControllerBase
         return Ok();
     }
     
-    [HttpPut("update-recipe")]
-    public async Task<IActionResult> UpdateRecipe()
+    [HttpPut("update-recipe/{id}")]
+    public async Task<IActionResult> UpdateRecipe(int id, [FromForm] RecipeUpdateDTO recipeDto)
     {
-        return NotFound();
+        if(!ModelState.IsValid) return BadRequest(ModelState);
+
+        var recipe =  await _dbContext.Recipes.FindAsync(id);
+        if(recipe == null) return NotFound();
+        
+        var user = await _userManager.GetUserAsync(User);
+        if(recipe.UserId != user?.Id) return Forbid();
+        
+        recipe.Name = recipeDto.Name;
+        recipe.Category = recipeDto.Category;
+        recipe.Area = recipeDto.Area;
+        recipe.Description = recipeDto.Description;
+        recipe.Instructions = recipeDto.Instructions;
+        recipe.Source = recipeDto.Source;
+        recipe.Youtube = recipeDto.Youtube;
+
+        if (recipeDto.ImageFile != null)
+        {
+            var imageUrl = await HelperMethods.SaveImageAsync(recipeDto.ImageFile);
+            recipe.MainImageUrl = imageUrl;
+            recipe.ImageGallery.Add(new RecipeImage{ ImageUrl = imageUrl});
+        }
+        
+        _dbContext.Recipes.Update(recipe);
+        await _dbContext.SaveChangesAsync();
+        return Ok();
+    }
+    
+    [HttpDelete("delete-recipe")]
+    public async Task<IActionResult> DeleteRecipe([FromQuery] int id)
+    {
+        var recipe = await _dbContext.Recipes.FindAsync(id);
+        if (recipe == null) return NotFound();
+        
+        var user = await _userManager.GetUserAsync(User);
+        if(recipe.UserId != user?.Id) return Forbid();
+        
+        // Image is not deleted
+        _dbContext.Recipes.Remove(recipe);
+        await _dbContext.SaveChangesAsync();
+        
+        return Ok();
     }
 }
