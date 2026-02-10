@@ -1,23 +1,25 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../services/AuthProvider";
 import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import styles from "./RecipeDetails.module.css";
 import { authFetch } from "../utils/authFetch";
 import { resolveImageUrl } from "../utils/helpers";
+import { toast } from "react-toastify";
 import {
   LOOKUP_ID_URL,
   ISFAVORITED_RECIPE_URL,
   FAVORITE_RECIPE_URL,
   UNFAVORITE_RECIPE_URL,
+  DELETE_RECIPE_URL,
 } from "../utils/apiUrls";
 
 function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -111,6 +113,32 @@ function RecipeDetails() {
     }
   }
 
+  async function handleDelete(e) {
+    e.preventDefault();
+    if (!window.confirm("Are you sure you want to delete your recipe?")) return;
+
+    try {
+      const response = await authFetch(
+        `${DELETE_RECIPE_URL}?id=${id}`,
+        { method: "DELETE" },
+        logout
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Delete failed:", error);
+        toast.error("Failed to delete user");
+        return;
+      }
+
+      toast.success("Recipe Deleted");
+      navigate(-1);
+
+      // Catch 401 Unauthorized
+    } catch (error) {
+      console.log("Request failed:", error.message);
+    }
+  }
+
   if (!recipe) return <Spinner />;
 
   const imageUrl = resolveImageUrl(recipe.mainImageUrl);
@@ -154,8 +182,35 @@ function RecipeDetails() {
             </ul>
             <h4 className="mt-4">Instructions:</h4>
             <p>{recipe.instructions}</p>
+            {recipe.userId && (
+              <p>
+                Recipe by: <Link>{recipe.userName}</Link>
+              </p>
+            )}
+            {recipe.modifiedAt && <p> Modified at: {recipe.modifiedAt}</p>}
           </div>
         </div>
+
+        {isAuthenticated && user.userId === recipe.userId ? (
+          <div className="row pt-4 g-3">
+            <div className="col-12 col-md-6">
+              <Link
+                to={`/EditRecipe/${id}`}
+                className="btn btn-primary btn-lg w-100 "
+              >
+                Edit Recipe ✎
+              </Link>
+            </div>
+            <div className="col-12 col-md-6">
+              <button
+                onClick={handleDelete}
+                className="btn btn-danger btn-lg w-100"
+              >
+                Delete Recipe 🗑️
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
