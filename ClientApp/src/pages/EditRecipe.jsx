@@ -2,14 +2,17 @@ import { useState } from "react";
 import BackButton from "../components/BackButton";
 import { authFetch } from "../utils/authFetch";
 import { areas, categories } from "../utils/dropdownOptions";
-import { CREATE_RECIPE_URL } from "../utils/apiUrls";
+import { UPDATE_RECIPE_URL, LOOKUP_ID_URL } from "../utils/apiUrls";
 import { useAuth } from "../services/AuthProvider";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { resolveImageUrl } from "../utils/helpers";
 
 function EditRecipe() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { id } = useParams();
 
   // State
   const [name, setName] = useState("");
@@ -53,6 +56,36 @@ function EditRecipe() {
     setImageFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   }
+  // Fetch recipe
+  useEffect(() => {
+    async function fetchRecipe() {
+      try {
+        const res = await fetch(LOOKUP_ID_URL + id);
+
+        if (!res.ok) {
+          navigate("/not-found", { replace: true });
+          return;
+        }
+
+        const data = await res.json();
+        console.log(data);
+
+        setName(data.name);
+        setCategory(data.category);
+        setArea(data.area);
+        setDescription(data.description);
+        setSource(data.source);
+        setYoutube(data.youtube);
+        setInstructions(data.instructions);
+        setPreviewUrl(resolveImageUrl(data.mainImageUrl));
+        setIngredients(data.ingredients);
+      } catch (error) {
+        navigate("/not-found", { replace: true });
+        console.error("Failed to fetch recipe:", error);
+      }
+    }
+    fetchRecipe();
+  }, []);
 
   // Sumbit
   async function handleSubmit(e) {
@@ -60,6 +93,7 @@ function EditRecipe() {
 
     const formData = new FormData();
 
+    formData.append("id", id);
     formData.append("name", name);
     formData.append("category", category);
     formData.append("area", area);
@@ -79,9 +113,9 @@ function EditRecipe() {
 
     try {
       const response = await authFetch(
-        CREATE_RECIPE_URL,
+        `${UPDATE_RECIPE_URL}/${id}`,
         {
-          method: "POST",
+          method: "PUT",
           body: formData,
         },
         logout
@@ -93,7 +127,7 @@ function EditRecipe() {
         throw new Error("Request failed");
       }
 
-      toast.success("Recipe Created!🥂");
+      toast.success("Recipe Updated!💾");
       navigate(-1);
       // Catch 401 Unauthorized
     } catch (error) {
@@ -268,7 +302,7 @@ function EditRecipe() {
             </div>
           </div>
           <button type="submit" className="btn btn-primary w-100">
-            Create Recipe 🍽️
+            Update Recipe 💾
           </button>
           <BackButton buttonText="Cancel" className="w-100 mt-2" />
         </form>
@@ -277,4 +311,4 @@ function EditRecipe() {
   );
 }
 
-export default CreateRecipe;
+export default EditRecipe;
