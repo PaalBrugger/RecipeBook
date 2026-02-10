@@ -70,7 +70,6 @@ function EditRecipe() {
         }
 
         const data = await res.json();
-        console.log(data);
 
         setName(data.name);
         setCategory(data.category);
