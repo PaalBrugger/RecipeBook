@@ -206,7 +206,9 @@ function RecipeDetails() {
               ))}
             </ul>
             <h4 className="mt-4">Instructions:</h4>
-            <p>{recipe.instructions}</p>
+            <div style={{ whiteSpace: "pre-line" }}>
+              <p>{recipe.instructions}</p>
+            </div>
             {recipe.userId && (
               <p>
                 {/*Link to user*/}
