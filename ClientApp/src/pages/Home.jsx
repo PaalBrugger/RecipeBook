@@ -7,6 +7,10 @@ function Home() {
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    document.title = "RecipeBook - Explore Recipes";
+  }, []);
+
   // Fetch random recipes from API
   useEffect(() => {
     async function fetchRecipes() {

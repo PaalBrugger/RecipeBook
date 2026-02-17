@@ -14,6 +14,10 @@ function UserRecipes() {
   const { logout } = useAuth();
 
   useEffect(() => {
+    document.title = `RecipeBook - My Recipes`;
+  }, []);
+
+  useEffect(() => {
     async function fetchRecipes() {
       try {
         const res = await authFetch(GET_USER_CREATED_RECIPES_URL, {}, logout);

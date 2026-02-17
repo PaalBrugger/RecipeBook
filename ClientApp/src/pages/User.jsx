@@ -3,10 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { USER_URL } from "../utils/apiUrls";
 import { authFetch } from "../utils/authFetch";
+import { useEffect } from "react";
 
 function User() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = `RecipeBook - ${user?.username}`;
+  }, []);
 
   async function handleLogout(e) {
     e.preventDefault();

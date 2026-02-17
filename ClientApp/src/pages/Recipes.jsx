@@ -35,6 +35,10 @@ function Recipes() {
     currentPage * recipesPerPage
   );
 
+  useEffect(() => {
+    document.title = "RecipeBook - Discover";
+  }, []);
+
   // Filter by category and area
   useEffect(() => {
     async function fetchRecipes() {

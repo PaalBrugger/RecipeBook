@@ -25,6 +25,10 @@ function RecipeDetails() {
   const { id } = useParams();
 
   useEffect(() => {
+    document.title = recipe ? `${recipe.name} - RecipeBook` : "RecipeBook";
+  }, [recipe]);
+
+  useEffect(() => {
     async function fetchRecipe() {
       try {
         const res = await fetch(LOOKUP_ID_URL + id);

@@ -11,6 +11,10 @@ function Favorites() {
   const { logout } = useAuth();
 
   useEffect(() => {
+    document.title = "RecipeBook - Favorites";
+  }, []);
+
+  useEffect(() => {
     async function fetchFavorites() {
       try {
         const res = await authFetch(GET_FAVORITED_RECIPES_URL, {}, logout);
