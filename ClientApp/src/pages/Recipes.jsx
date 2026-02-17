@@ -160,7 +160,7 @@ function Recipes() {
 
   return (
     <div>
-      <div className="container mt-4">
+      <div className="container mt-4 pt-4 pt-md-0">
         <div className="row align-items-center g-2">
           {/* Category Dropdown */}
           <div className="col-md-4">

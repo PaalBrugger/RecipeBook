@@ -29,7 +29,10 @@ function RecipeContainer({
         <>
           <div className="row">
             {recipes.map((recipe, index) => (
-              <div className="col-md-3 pb-4" key={index}>
+              <div
+                className="col-12 col-sm-6 col-md-4 col-lg-3 pb-4"
+                key={index}
+              >
                 <Link
                   to={`/Recipe/${recipe.id}`}
                   style={{ textDecoration: "none" }}

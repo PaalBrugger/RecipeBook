@@ -10,3 +10,12 @@
 .recipe-card:hover {
   border: 2px solid #0d6efd;
 }
+.recipe-card h3 {
+  font-size: 1rem; /* mobile */
+}
+
+@media (min-width: 768px) {
+  .recipe-card h3 {
+    font-size: 1.5rem; /* md and up */
+  }
+}
