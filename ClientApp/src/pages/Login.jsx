@@ -27,6 +27,10 @@ function Login() {
   const location = useLocation();
   const from = location.state?.from || "/";
 
+  useEffect(() => {
+    document.title = `RecipeBook - Login`;
+  }, []);
+
   async function handleLogin(e) {
     e.preventDefault();
     try {
