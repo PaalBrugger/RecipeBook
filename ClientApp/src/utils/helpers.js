@@ -21,3 +21,13 @@ export function resolveImageUrl(url) {
   // relative URL, on disk
   return `${BASE_URL}${url}`;
 }
+
+export function getEmbedUrl(url) {
+  if (!url) return "";
+  const videoId = url.split("v=")[1];
+  if (!videoId) return url;
+  const ampersandPosition = videoId.indexOf("&");
+  return `https://www.youtube.com/embed/${
+    ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId
+  }`;
+}
