@@ -8,11 +8,13 @@ import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { resolveImageUrl } from "../utils/helpers";
+import Spinner from "../components/Spinner";
 
 function EditRecipe() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
 
   // State
   const [name, setName] = useState("");
@@ -83,6 +85,8 @@ function EditRecipe() {
       } catch (error) {
         navigate("/not-found", { replace: true });
         console.error("Failed to fetch recipe:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchRecipe();
@@ -137,7 +141,9 @@ function EditRecipe() {
     }
   }
 
-  return (
+  return isLoading ? (
+    <Spinner />
+  ) : (
     <div>
       <h1 className="mb-5">Create Recipe 🌮</h1>
 
