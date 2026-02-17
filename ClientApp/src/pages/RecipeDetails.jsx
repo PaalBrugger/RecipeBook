@@ -6,7 +6,7 @@ import BackButton from "../components/BackButton";
 import Spinner from "../components/Spinner";
 import styles from "./RecipeDetails.module.css";
 import { authFetch } from "../utils/authFetch";
-import { resolveImageUrl } from "../utils/helpers";
+import { resolveImageUrl, getEmbedUrl } from "../utils/helpers";
 import { toast } from "react-toastify";
 import {
   LOOKUP_ID_URL,
@@ -154,6 +154,8 @@ function RecipeDetails() {
           {isFavorite ? "Favorited ❤️ " : "Add to Favorites 🤍"}
         </button>
       </div>
+
+      {/* Image and YT link */}
       <div className={`card p-4 shadow rounded-4 ${styles["card-background"]}`}>
         <div className="row">
           <div className="col-md-5">
@@ -164,7 +166,26 @@ function RecipeDetails() {
                 className="img-fluid rounded-4"
               />
             ) : null}
+            {recipe.youtube && (
+              <>
+                <p className="pt-2">Youtube:</p>
+                <iframe
+                  width="420"
+                  height="315"
+                  src={getEmbedUrl(recipe.youtube)}
+                ></iframe>
+              </>
+            )}
+            <br></br>
+            {recipe.source && (
+              <>
+                <p className="pt-5">Source:</p>
+                <a href={recipe.source}>{recipe.source}</a>
+              </>
+            )}
           </div>
+
+          {/* Recipe details */}
           <div className="col-md-7">
             <h2>{recipe.name}</h2>
             <p>
@@ -184,6 +205,7 @@ function RecipeDetails() {
             <p>{recipe.instructions}</p>
             {recipe.userId && (
               <p>
+                {/*Link to user*/}
                 Recipe by: <Link>{recipe.userName}</Link>
               </p>
             )}
