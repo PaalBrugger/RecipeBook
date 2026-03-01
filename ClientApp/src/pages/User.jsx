@@ -6,7 +6,7 @@ import { authFetch } from "../utils/authFetch";
 import { useEffect } from "react";
 
 function User() {
-  const { logout, user } = useAuth();
+  const { logout, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +59,14 @@ function User() {
 
   return (
     <div>
+      {isAdmin && (
+        <>
+          <Link to="/Admin" className="btn mt-3 w-50 btn-primary">
+            Admin
+          </Link>
+          <br />
+        </>
+      )}
       <Link to="/UserRecipes" className="btn mt-5 w-50 btn-primary">
         My Recipes
       </Link>
@@ -67,6 +75,7 @@ function User() {
         Edit User
       </Link>
       <br />
+
       <button onClick={handleLogout} className="btn btn-primary w-50 mt-3">
         Logout
       </button>
