@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RecipeBook.API.Models;
+using System.Linq;
 
 namespace RecipeBook.API.Controllers;
 
@@ -70,12 +71,15 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByNameAsync(model.Username);
         if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
         {
-            var claims = new[]
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),                
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -87,7 +91,7 @@ public class AuthController : ControllerBase
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), userId = user.Id });
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), userId = user.Id , roles});
         }
 
         return Unauthorized();
