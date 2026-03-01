@@ -56,6 +56,32 @@ builder.Services.AddHttpClient<MealDBImporter>();
 
 var app = builder.Build();
 
+// Admin
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    string adminEmail = "admin@example.com";
+    string adminPassword = "Admin@123";
+
+    // Create Admin Role if it doesn't exist
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+    // Create Admin User
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser() { UserName = adminEmail, Email = adminEmail, Name = "Admin" };
+        await userManager.CreateAsync(adminUser, adminPassword);
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
+
+// Import recipes from MealDB
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -66,20 +92,7 @@ using (var scope = app.Services.CreateScope())
     if (!context.Recipes.Any())
     {
         var importer = services.GetRequiredService<MealDBImporter>();
-        await importer.ImportMealsAsync("Beef");
-        await importer.ImportMealsAsync("Breakfast");
-        await importer.ImportMealsAsync("Chicken");
-        await importer.ImportMealsAsync("Dessert");
-        await importer.ImportMealsAsync("Goat");
-        await importer.ImportMealsAsync("Lamb");
-        await importer.ImportMealsAsync("Pasta");
-        await importer.ImportMealsAsync("Pork");
-        await importer.ImportMealsAsync("Seafood");
-        await importer.ImportMealsAsync("Side");
-        await importer.ImportMealsAsync("Starter");
-        await importer.ImportMealsAsync("Vegan");
-        await importer.ImportMealsAsync("Vegetarian");
-        await importer.ImportMealsAsync("Miscellaneous");
+        await importer.ImportMealsAsync();
         
         Console.WriteLine("Imported MealDB recipes into database!");
     }
