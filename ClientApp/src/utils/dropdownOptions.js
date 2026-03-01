@@ -35,6 +35,7 @@ export const areas = [
   "Malaysian",
   "Mexican",
   "Moroccan",
+  "Norwegian",
   "Polish",
   "Portugese",
   "Russian",
