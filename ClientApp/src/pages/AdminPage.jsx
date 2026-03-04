@@ -6,11 +6,11 @@ function AdminPage() {
     <div>
       <BackButton className="position-absolute start-0 mt-3 ms-5" />
 
-      <Link to="" className="btn mt-5 w-50 btn-primary">
+      <Link to="/ManageRecipes" className="btn mt-5 w-50 btn-primary">
         Recipes
       </Link>
       <br />
-      <Link to="" className="btn mt-3 w-50 btn-primary">
+      <Link to="/ManageUsers" className="btn mt-3 w-50 btn-primary">
         Users
       </Link>
       <br />
