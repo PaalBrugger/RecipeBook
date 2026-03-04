@@ -23,3 +23,6 @@ export const CREATE_RECIPE_URL = `${API_BASE_URL}/user/create-recipe`;
 export const GET_USER_CREATED_RECIPES_URL = `${API_BASE_URL}/user/get-user-created-recipes`;
 export const UPDATE_RECIPE_URL = `${API_BASE_URL}/user/update-recipe`;
 export const DELETE_RECIPE_URL = `${API_BASE_URL}/user/delete-recipe`;
+
+// Admin
+export const GET_USERS_URL = `${API_BASE_URL}/admin/users`;
