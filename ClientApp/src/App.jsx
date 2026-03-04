@@ -17,6 +17,8 @@ import UserRecipes from "./pages/UserRecipes";
 import CreateRecipe from "./pages/CreateRecipe";
 import EditRecipe from "./pages/EditRecipe";
 import AdminPage from "./pages/AdminPage";
+import ManageUsers from "./pages/ManageUsers";
+import ManageRecipes from "./pages/ManageRecipes";
 
 function App() {
   return (
@@ -73,6 +75,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="ManageRecipes"
+            element={
+              <ProtectedRoute>
+                <ManageRecipes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="ManageUsers"
+            element={
+              <ProtectedRoute>
+                <ManageUsers />
               </ProtectedRoute>
             }
           />
