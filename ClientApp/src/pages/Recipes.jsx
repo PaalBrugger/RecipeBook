@@ -78,7 +78,7 @@ function Recipes() {
             const dataArr = await Promise.all(
               responses.map((res) => res.json())
             );
-            meals = dataArr.map((data) => data);
+            meals = dataArr;
           }
 
           // If both filters are selected, do extra filtering
