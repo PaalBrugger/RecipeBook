@@ -33,7 +33,7 @@ public class RecipeController : ControllerBase
        
        return Ok(recipeDto);
     }
-
+    // Add endpoint for multiple random recipes
     [HttpGet("random")]
     public async Task<IActionResult> GetRandomRecipe()
     {
