@@ -90,11 +90,11 @@ function Recipes() {
             meals = data || [];
           }
         }
+        setRecipes(meals);
       } catch (error) {
         console.log("Failed to fetch", error);
         setRecipes([]);
       } finally {
-        setRecipes(meals);
         setIsLoading(false);
       }
     }
