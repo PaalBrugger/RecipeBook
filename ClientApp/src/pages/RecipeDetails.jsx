@@ -19,7 +19,7 @@ import {
 function RecipeDetails() {
   const [recipe, setRecipe] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -170,10 +170,11 @@ function RecipeDetails() {
                 className="img-fluid rounded-4"
               />
             ) : null}
+            {recipe.description && <p className="mt-2">{recipe.description}</p>}
             {recipe.youtube && (
               <>
-                <p className="pt-2">Youtube:</p>
                 <iframe
+                  className="mt-3"
                   width="420"
                   height="315"
                   src={getEmbedUrl(recipe.youtube)}
@@ -219,7 +220,7 @@ function RecipeDetails() {
           </div>
         </div>
 
-        {isAuthenticated && user.userId === recipe.userId ? (
+        {(isAuthenticated && user.userId === recipe.userId) || isAdmin ? (
           <div className="row pt-4 g-3">
             <div className="col-12 col-md-6">
               <Link
