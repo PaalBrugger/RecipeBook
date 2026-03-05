@@ -7,6 +7,7 @@ import { authFetch } from "../utils/authFetch";
 import {
   ADMINISTRATE_USER_URL,
   ADMIN_UNFAVORITE_RECIPE_URL,
+  DELETE_RECIPE_URL,
 } from "../utils/apiUrls";
 
 function ManageUser() {
@@ -122,6 +123,34 @@ function ManageUser() {
     setFavoritedRecipes((prev) => prev.filter((r) => r.id !== recipeId));
   }
 
+  async function handleDeleteUser() {
+    if (!window.confirm("Are you sure?")) {
+      return;
+    }
+    try {
+      const response = await authFetch(
+        `${ADMINISTRATE_USER_URL}/${userId}`,
+        {
+          method: "DELETE",
+        },
+        logout
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Delete failed:", error);
+        toast.error("Failed to delete user");
+        return;
+      }
+      toast.success("Account deleted successfully 🗑️");
+      navigate(-1);
+
+      // Catch 401 Unauthorized
+    } catch (error) {
+      console.log("Request failed:", error.message);
+      toast.error("Unauthorized");
+    }
+  }
+
   return (
     <>
       <BackButton className="position-absolute start-0 mt-3 ms-5" />
@@ -218,7 +247,11 @@ function ManageUser() {
               <button type="submit" className="btn btn-primary w-100">
                 Save Changes 💾
               </button>
-              <button type="button" className="btn btn-danger w-100 mt-3">
+              <button
+                type="button"
+                onClick={handleDeleteUser}
+                className="btn btn-danger w-100 mt-3"
+              >
                 Delete User
               </button>
             </form>
