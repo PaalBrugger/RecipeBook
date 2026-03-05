@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import BackButton from "../components/BackButton";
-import { GET_USERS_URL } from "../utils/apiUrls";
 import { authFetch } from "../utils/authFetch";
 import { useAuth } from "../services/AuthProvider";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
+import { GET_USERS_URL } from "../utils/apiUrls";
 
 function ManageUsers() {
   const { logout } = useAuth();
@@ -64,7 +64,7 @@ function ManageUsers() {
               </div>
             </div>
           </div>
-          <div className="row">
+          <div className="row mt-3">
             {filteredUsers.map((user) => (
               <div className="col-12 col-md-6 col-lg-4 mb-3 mt-3" key={user.id}>
                 <div className="card shadow-sm h-100">
@@ -75,7 +75,7 @@ function ManageUsers() {
                     </div>
 
                     <Link
-                      to={`/admin/users/${user.id}`}
+                      to={`/ManageUser/${user.id}`}
                       className="btn btn-sm btn-outline-primary"
                     >
                       View
