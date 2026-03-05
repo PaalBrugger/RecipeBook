@@ -19,6 +19,7 @@ import EditRecipe from "./pages/EditRecipe";
 import AdminPage from "./pages/AdminPage";
 import ManageUsers from "./pages/ManageUsers";
 import ManageRecipes from "./pages/ManageRecipes";
+import ManageUser from "./pages/ManageUser";
 
 function App() {
   return (
@@ -91,6 +92,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="ManageUser/:id"
+            element={
+              <ProtectedRoute>
+                <ManageUser />
               </ProtectedRoute>
             }
           />
