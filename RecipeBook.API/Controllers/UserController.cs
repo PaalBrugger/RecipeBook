@@ -192,7 +192,11 @@ public class UserController : ControllerBase
     {
         if(!ModelState.IsValid) return BadRequest(ModelState);
 
-        var recipe =  await _dbContext.Recipes.FindAsync(id);
+        var recipe =  await _dbContext.Recipes
+            .Include(r=> r.Ingredients)
+            .Where(r => r.Id == id)
+            .FirstOrDefaultAsync();
+        
         if(recipe == null) return NotFound();
         
         var user = await _userManager.GetUserAsync(User);
@@ -210,6 +214,17 @@ public class UserController : ControllerBase
         recipe.Instructions = recipeDto.Instructions;
         recipe.Source = recipeDto.Source;
         recipe.Youtube = recipeDto.Youtube;
+        recipe.ModifiedAt = DateTime.UtcNow;
+        recipe.Ingredients = recipeDto.Ingredients?
+            .Where(i => !string.IsNullOrWhiteSpace(i.Name))
+            .Select(i => new Ingredient
+            {
+                Name = i.Name!.Trim(),
+                Measure = i.Measure ?? ""
+            })
+            .ToList() ?? new List<Ingredient>();
+
+        
 
         if (recipeDto.ImageFile != null)
         {
