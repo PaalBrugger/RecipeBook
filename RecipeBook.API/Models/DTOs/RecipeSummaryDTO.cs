@@ -1,4 +1,4 @@
-namespace RecipeBook.API.Models;
+namespace RecipeBook.API.Models.DTOs;
 
 public class RecipeSummaryDTO
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RecipeBook.API.Models;
+namespace RecipeBook.API.Models.DTOs;
 
 public class RecipeCreateDTO
 {

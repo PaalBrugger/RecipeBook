@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using RecipeBook.API.Models;
+using RecipeBook.API.Models.DTOs;
+
 using System.Linq;
 
 namespace RecipeBook.API.Controllers;

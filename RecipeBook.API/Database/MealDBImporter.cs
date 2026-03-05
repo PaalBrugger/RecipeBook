@@ -1,4 +1,6 @@
 using RecipeBook.API.Models;
+using RecipeBook.API.Models.DTOs;
+
 
 namespace RecipeBook.API.Database;
 

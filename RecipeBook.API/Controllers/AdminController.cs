@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeBook.API.Database;
 using RecipeBook.API.Models;
+using RecipeBook.API.Models.DTOs;
+    
 
 namespace RecipeBook.API.Controllers;
 
