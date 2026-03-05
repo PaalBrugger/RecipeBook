@@ -167,7 +167,6 @@ function CreateRecipe() {
                   className="form-control"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  required
                 ></input>
               </div>
               <div className="mb-3">
