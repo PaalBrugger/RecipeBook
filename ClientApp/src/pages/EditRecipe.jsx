@@ -81,7 +81,9 @@ function EditRecipe() {
         setYoutube(data.youtube);
         setInstructions(data.instructions);
         setPreviewUrl(resolveImageUrl(data.mainImageUrl));
-        setIngredients(data.ingredients);
+        data.ingredients.length !== 0
+          ? setIngredients(data.ingredients)
+          : setIngredients([{ name: "", measure: "" }]);
       } catch (error) {
         navigate("/not-found", { replace: true });
         console.error("Failed to fetch recipe:", error);
@@ -101,11 +103,11 @@ function EditRecipe() {
     formData.append("id", id);
     formData.append("name", name);
     formData.append("category", category);
-    formData.append("area", area);
-    formData.append("description", description);
-    formData.append("source", source);
-    formData.append("youtube", youtube);
-    formData.append("instructions", instructions);
+    formData.append("area", area) ?? "";
+    formData.append("description", description ?? "");
+    formData.append("source", source ?? "");
+    formData.append("youtube", youtube ?? "");
+    formData.append("instructions", instructions ?? "");
 
     if (imageFile) {
       formData.append("imageFile", imageFile);
@@ -145,7 +147,7 @@ function EditRecipe() {
     <Spinner />
   ) : (
     <div>
-      <h1 className="mb-5">Create Recipe 🌮</h1>
+      <h1 className="mb-5">Edit Recipe 🖌️</h1>
 
       <div className="container mt-4">
         <form onSubmit={handleSubmit}>
@@ -208,7 +210,6 @@ function EditRecipe() {
                   className="form-control"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  required
                 ></input>
               </div>
               <div className="mb-3">
