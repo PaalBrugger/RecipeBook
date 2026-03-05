@@ -82,9 +82,42 @@ public class AdminController : ControllerBase
     }
 
     [HttpPut("user/{id}")]
-    public async Task<IActionResult> UpdateUser(UserDTO userDto)
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UserDTO userDto)
     {
-        return Ok();
+        if(!ModelState.IsValid) return BadRequest(ModelState);
+        
+        var user = _userManager.Users.FirstOrDefault(u => u.Id == id);
+        if (user == null) return NotFound();
+        user.UserName = userDto.UserName;
+        user.Email = userDto.Email;
+        user.Name = userDto.Name;
+        user.City = userDto.City;
+        user.Country = userDto.Country;
+        user.PostalCode = userDto.PostalCode;
+        user.PhoneNumber = userDto.PhoneNumber;
+        await _userManager.UpdateAsync(user);  
+        await _dbContext.SaveChangesAsync();
+        
+        return Ok(new {message = "User Updated Successfully"});
+    }
+    
+    [HttpPost("unfavorite-recipe")]
+    public async Task<IActionResult> UnfavoriteRecipe([FromBody] UnfavoriteRequest request)
+    {
+        if(!ModelState.IsValid) return BadRequest(ModelState);
+        
+        var alreadyFavorited =
+            await _dbContext.FavoritedRecipes
+                .Where(r => r.RecipeId == request.RecipeId && r.UserId == request.UserId)
+                .FirstOrDefaultAsync();
+
+        if (alreadyFavorited != null)
+        {
+            _dbContext.FavoritedRecipes.Remove(alreadyFavorited);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+        return NotFound();
     }
 
     [HttpDelete("user/{id}")]

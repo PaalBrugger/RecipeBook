@@ -196,7 +196,12 @@ public class UserController : ControllerBase
         if(recipe == null) return NotFound();
         
         var user = await _userManager.GetUserAsync(User);
-        if(recipe.UserId != user?.Id) return Forbid();
+        if (user == null)
+            return Unauthorized();
+        
+        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+        
+        if(recipe.UserId != user?.Id && !isAdmin) return Forbid();
         
         recipe.Name = recipeDto.Name;
         recipe.Category = recipeDto.Category;
@@ -226,7 +231,11 @@ public class UserController : ControllerBase
         if (recipe == null) return NotFound();
         
         var user = await _userManager.GetUserAsync(User);
-        if(recipe.UserId != user?.Id) return Forbid();
+        if(user == null) return Unauthorized();
+        
+        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+        
+        if(recipe.UserId != user?.Id && !isAdmin) return Forbid();
         
         // Image is not deleted
         _dbContext.Recipes.Remove(recipe);

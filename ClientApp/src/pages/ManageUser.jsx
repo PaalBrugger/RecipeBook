@@ -1,14 +1,17 @@
 import BackButton from "../components/BackButton";
 import { useAuth } from "../services/AuthProvider";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../utils/authFetch";
-import { ADMINISTRATE_USER_URL } from "../utils/apiUrls";
+import {
+  ADMINISTRATE_USER_URL,
+  ADMIN_UNFAVORITE_RECIPE_URL,
+} from "../utils/apiUrls";
 
 function ManageUser() {
   const { logout } = useAuth();
-  const { id } = useParams();
+  const { id: userId } = useParams();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -19,18 +22,20 @@ function ManageUser() {
   const [favoritedRecipes, setFavoritedRecipes] = useState([]);
   const [createdRecipes, setCreatedRecipes] = useState([]);
 
+  const navigate = useNavigate();
+
   // Load user data
   useEffect(() => {
-    authFetch(`${ADMINISTRATE_USER_URL}/${id}`, {}, logout)
+    authFetch(`${ADMINISTRATE_USER_URL}/${userId}`, {}, logout)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setUsername(data.userName);
         setEmail(data.email);
         setName(data.name);
         setCity(data.city);
         setCountry(data.country);
         setPostalCode(data.postalCode);
+        setPhoneNumber(data.phoneNumber);
         setFavoritedRecipes(data.favoritedRecipes);
         setCreatedRecipes(data.createdRecipes);
       });
@@ -41,19 +46,21 @@ function ManageUser() {
     e.preventDefault();
     try {
       const response = await authFetch(
-        `${ADMINISTRATE_USER_URL}/${id}`,
+        `${ADMINISTRATE_USER_URL}/${userId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            id: userId,
             username,
             email,
             name,
             city,
             country,
             postalCode,
+            phoneNumber,
           }),
         },
         logout
@@ -65,12 +72,54 @@ function ManageUser() {
         return;
       }
       toast.success(`Changes saved 💾`);
+      navigate(-1);
 
       // Catch 401 Unauthorized
     } catch (error) {
       console.log("Request failed:", error.message);
       toast.error("Unauthorized");
     }
+  }
+
+  async function handleDeleteCreatedRecipe(recipeId) {
+    if (!window.confirm("Are you sure?")) {
+      return;
+    }
+    try {
+      const response = await authFetch(
+        `${DELETE_RECIPE_URL}?id=${recipeId}`,
+        { method: "DELETE" },
+        logout
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Delete failed:", error);
+        toast.error("Failed to delete recipe");
+        return;
+      }
+      toast.success("Recipe Deleted");
+      setCreatedRecipes((prev) => prev.filter((r) => r.id !== recipeId));
+
+      // Catch 401 Unauthorized
+    } catch (error) {
+      console.log("Request failed:", error.message);
+    }
+  }
+
+  async function handleUnfavorite(recipeId) {
+    const response = await authFetch(
+      ADMIN_UNFAVORITE_RECIPE_URL,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, recipeId }),
+      },
+      logout
+    );
+    if (!response.ok) return;
+    setFavoritedRecipes((prev) => prev.filter((r) => r.id !== recipeId));
   }
 
   return (
@@ -93,7 +142,7 @@ function ManageUser() {
                 <input
                   type="text"
                   className="form-control"
-                  value={id}
+                  value={userId}
                   disabled
                 />
               </div>
@@ -188,15 +237,19 @@ function ManageUser() {
                     <h3>{r.name}</h3>
                     <p>{r.category}</p>
                     <div className="flex gap-2">
-                      <button>Edit</button>
-                      <button>Delete</button>
+                      <button onClick={() => navigate(`/EditRecipe/${r.id}`)}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDeleteCreatedRecipe(r.id)}>
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             )}
             {/*Favorited Recipes */}
-            <h3>Favorited Recipes</h3>
+            <h3 className="mt-2">Favorited Recipes</h3>
             {favoritedRecipes.length === 0 ? (
               <p> No favorited recipes</p>
             ) : (
@@ -217,8 +270,12 @@ function ManageUser() {
                       <td>{r.category}</td>
                       <td>{r.userName}</td>
                       <td>
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <button onClick={() => navigate(`/EditRecipe/${r.id}`)}>
+                          Edit
+                        </button>
+                        <button onClick={() => handleUnfavorite(r.id)}>
+                          Unfav
+                        </button>
                       </td>
                     </tr>
                   ))}
