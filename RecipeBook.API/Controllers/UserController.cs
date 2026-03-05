@@ -67,8 +67,12 @@ public class UserController : ControllerBase
         var user = await _userManager.FindByNameAsync(username);
         if (user == null) return NotFound();
         
-        var result = await _userManager.DeleteAsync(user);
+        // delete all recipes by this user
+        var recipes = _dbContext.Recipes.Where(r => r.UserId == user.Id);
+        _dbContext.Recipes.RemoveRange(recipes);
+        await _dbContext.SaveChangesAsync();
         
+        var result = await _userManager.DeleteAsync(user);
         if (result.Succeeded) return Ok(new {message = "User Deleted Successfully"});
         
         return BadRequest(new {result.Errors});
