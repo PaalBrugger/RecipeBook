@@ -130,7 +130,7 @@ function RecipeDetails() {
       if (!response.ok) {
         const error = await response.json();
         console.error("Delete failed:", error);
-        toast.error("Failed to delete user");
+        toast.error("Failed to delete recipe");
         return;
       }
 
