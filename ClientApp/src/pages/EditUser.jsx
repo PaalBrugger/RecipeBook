@@ -14,6 +14,7 @@ function EditUser() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const oldUsernameRef = useRef("");
 
@@ -52,6 +53,7 @@ function EditUser() {
             city,
             country,
             postalCode,
+            phoneNumber,
           }),
         },
         logout
@@ -149,6 +151,15 @@ function EditUser() {
               className="form-control"
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">PhoneNumber:</label>
+            <input
+              type="text"
+              className="form-control"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
             />
           </div>
 
