@@ -9,7 +9,8 @@ export const LOGIN_URL = `${API_BASE_URL}/auth/login`;
 
 // Recipe
 export const FILTER_URL = `${API_BASE_URL}/recipe/filter`;
-export const RANDOM_URL = `${API_BASE_URL}/recipe/random`;
+export const RANDOM_RECIPE_URL = `${API_BASE_URL}/recipe/random-recipe`;
+export const RANDOM_RECIPES_URL = `${API_BASE_URL}/recipe/random-recipes`;
 export const SEARCH_URL = `${API_BASE_URL}/recipe/search`;
 export const LOOKUP_ID_URL = `${API_BASE_URL}/recipe/`;
 
@@ -26,3 +27,5 @@ export const DELETE_RECIPE_URL = `${API_BASE_URL}/user/delete-recipe`;
 
 // Admin
 export const GET_USERS_URL = `${API_BASE_URL}/admin/users`;
+export const ADMINISTRATE_USER_URL = `${API_BASE_URL}/admin/user`;
+export const ADMIN_UNFAVORITE_RECIPE_URL = `${API_BASE_URL}/admin/unfavorite-recipe`;
