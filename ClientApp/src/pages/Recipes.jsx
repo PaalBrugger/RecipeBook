@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { areas, categories } from "../utils/dropdownOptions";
 import RecipeContainer from "../components/RecipeContainer";
-import { FILTER_URL, RANDOM_URL, SEARCH_URL } from "../utils/apiUrls";
+import { FILTER_URL, RANDOM_RECIPES_URL, SEARCH_URL } from "../utils/apiUrls";
 
 function Recipes() {
   const [params, setParams] = useSearchParams();
@@ -73,12 +73,9 @@ function Recipes() {
 
             // No Filter, fetch random recipes
           } else if (searchTerm === "") {
-            const fetches = Array.from({ length: 36 }, () => fetch(RANDOM_URL));
-            const responses = await Promise.all(fetches);
-            const dataArr = await Promise.all(
-              responses.map((res) => res.json())
-            );
-            meals = dataArr;
+            const res = await fetch(RANDOM_RECIPES_URL);
+            const data = await res.json();
+            meals = data;
           }
 
           // If both filters are selected, do extra filtering

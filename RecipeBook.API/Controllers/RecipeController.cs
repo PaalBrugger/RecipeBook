@@ -33,8 +33,22 @@ public class RecipeController : ControllerBase
        
        return Ok(recipeDto);
     }
-    // Add endpoint for multiple random recipes
-    [HttpGet("random")]
+    [HttpGet("random-recipes")]
+    public async Task<IActionResult> GetRandomRecipes()
+    {
+        var recipes = await _dbContext.Recipes
+            .Include(r => r.Ingredients)
+            .OrderBy(r => Guid.NewGuid())
+            .Take(36)
+            .ToListAsync();
+        
+        var recipesDto = DTOTransformers.CreateRecipeDTOList(recipes);
+        
+        return Ok(recipesDto);
+
+    }
+    
+    [HttpGet("random-recipe")]
     public async Task<IActionResult> GetRandomRecipe()
     {
         var recipe = await _dbContext.Recipes
