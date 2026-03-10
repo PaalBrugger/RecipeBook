@@ -1,6 +1,6 @@
 namespace RecipeBook.API.Models;
 
-public class UpdateUserModel
+public class UpdateUserDTO
 {
     public string Username { get; set; }
     public string Email { get; set; }

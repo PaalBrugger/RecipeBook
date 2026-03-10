@@ -104,13 +104,13 @@ public class AdminController : ControllerBase
     }
     
     [HttpPost("unfavorite-recipe")]
-    public async Task<IActionResult> UnfavoriteRecipe([FromBody] UnfavoriteRequest request)
+    public async Task<IActionResult> UnfavoriteRecipe([FromBody] UnfavoriteRequestDTO requestDto)
     {
         if(!ModelState.IsValid) return BadRequest(ModelState);
         
         var alreadyFavorited =
             await _dbContext.FavoritedRecipes
-                .Where(r => r.RecipeId == request.RecipeId && r.UserId == request.UserId)
+                .Where(r => r.RecipeId == requestDto.RecipeId && r.UserId == requestDto.UserId)
                 .FirstOrDefaultAsync();
 
         if (alreadyFavorited != null)

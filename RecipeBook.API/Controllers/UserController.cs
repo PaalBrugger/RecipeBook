@@ -37,7 +37,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("me")]
-    public async Task<IActionResult> UpdateMe([FromBody] UpdateUserModel model)
+    public async Task<IActionResult> UpdateMe([FromBody] UpdateUserDTO dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
@@ -47,12 +47,12 @@ public class UserController : ControllerBase
         var user = await _userManager.FindByNameAsync(username);
         if (user == null) return NotFound();
 
-        user.UserName = model.Username;
-        user.Email = model.Email;
-        user.Name = model.Name;
-        user.City = model.City;
-        user.Country = model.Country;
-        user.PostalCode = model.PostalCode;
+        user.UserName = dto.Username;
+        user.Email = dto.Email;
+        user.Name = dto.Name;
+        user.City = dto.City;
+        user.Country = dto.Country;
+        user.PostalCode = dto.PostalCode;
         
         var result = await _userManager.UpdateAsync(user);
         if (result.Succeeded) return Ok(new {message = "User Updated Successfully"});
