@@ -29,7 +29,7 @@ function ManageUsers() {
   return (
     <div>
       <BackButton className="position-absolute start-0 mt-3 ms-5" />
-      <h1>Users</h1>
+      <h1>Manage Users</h1>
 
       {isLoading ? (
         <Spinner />
