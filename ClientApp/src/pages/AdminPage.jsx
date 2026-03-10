@@ -1,7 +1,12 @@
 import BackButton from "../components/BackButton";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function AdminPage() {
+  useEffect(() => {
+    document.title = "RecipeBook - Admin";
+  }, []);
+
   return (
     <div>
       <BackButton className="position-absolute start-0 mt-3 ms-5" />
