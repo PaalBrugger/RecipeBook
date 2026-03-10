@@ -1,7 +1,7 @@
 import RecipeContainer from "../components/RecipeContainer";
 import Hero from "../components/Hero";
 import { useState, useEffect } from "react";
-import { RANDOM_URL } from "../utils/apiUrls";
+import { RANDOM_RECIPE_URL } from "../utils/apiUrls";
 
 function Home() {
   const [recipes, setRecipes] = useState([]);
@@ -14,7 +14,7 @@ function Home() {
   // Fetch random recipes from API
   useEffect(() => {
     async function fetchRecipes() {
-      const fetches = Array.from({ length: 4 }, () => fetch(RANDOM_URL));
+      const fetches = Array.from({ length: 4 }, () => fetch(RANDOM_RECIPE_URL));
       const responses = await Promise.all(fetches);
       const meals = await Promise.all(responses.map((res) => res.json()));
 
